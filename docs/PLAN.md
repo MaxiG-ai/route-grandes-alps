@@ -24,15 +24,21 @@ laden, und eine Etappe braucht nur ihren eigenen Track (~30 KB).
 
 | Frage | Entscheidung |
 |---|---|
-| Tages-Seiten | **14 statische Seiten** `tag-01.html … tag-14.html`, erzeugt von `tools/build_tage.py` aus einem Template + `data/reise.json` |
+| Tages-Seiten | **14 statische Seiten** `tag-01.html … tag-14.html`, erzeugt von `tools/build.py` aus Vorlagen + `data/reise.json` |
 | Datenladen | `fetch()` + JSON — das Hosting liefert über HTTP aus, kein `file://`-Zwang |
 | Hosting | **Hetzner Webhosting**, reiner Datei-Upload, `index.html` im Wurzelverzeichnis, ausschließlich relative Pfade |
 | Fotos | im Repo, skaliert (max. 1600 px) + 400-px-Thumbs |
 | Sprache | nur Deutsch |
 
-Kein Build-Schritt zur Laufzeit, kein npm, kein Framework: `tools/build_tage.py`
+Kein Build-Schritt zur Laufzeit, kein npm, kein Framework: `tools/build.py`
 läuft lokal, sein Ergebnis wird eingecheckt und mit hochgeladen. Was auf dem
 Server liegt, ist fertiges HTML.
+
+**Beim Umsetzen erweitert:** der Generator rendert nicht nur die Tages-Seiten,
+sondern auch `index.html`, `etappen.html` und `packliste.html`. Sonst hätten
+drei Seiten ihre Inhalte per JavaScript nachladen müssen, während die 14
+Tages-Seiten fertig ausgeliefert werden — zwei Mechaniken für dieselbe Sache.
+So bleibt es einer: `python3 tools/build.py` erzeugt alle 17 Seiten.
 
 ## 3. Struktur
 
@@ -49,16 +55,15 @@ Statische Multi-Page-Site, weiter reines HTML + Vanilla-JS + Leaflet.
 │   ├── css/
 │   │   ├── base.css        Farb-Tokens (Trikolore), Typografie, Grundraster
 │   │   ├── site.css        Header/Footer, Startseite, Etappenübersicht, Packliste
-│   │   └── tag.css         Kartenblock, Sidebar, Profil, Fotoraster, Lightbox
+│   │   └── tag.css         Kartenblock, Profil, Fotoraster, Lightbox
 │   ├── js/
-│   │   ├── format.js       de-DE Datum/Zahlen, statusOf(), fmtKm()
-│   │   ├── karte.js        Leaflet-Setup, Layer-Umschalter, renderRoute()
+│   │   ├── format.js       de-DE Datum- und Zahlenformate
+│   │   ├── karte.js        Leaflet-Grundgerüst, Linien, Marker
 │   │   ├── profil.js       SVG-Höhenprofil + Hover-Cursor
-│   │   ├── sparkline.js    Mini-Profile für die Etappenkarten
-│   │   ├── lightbox.js     Foto-Galerie (Pfeiltasten, Escape, Swipe)
+│   │   ├── lightbox.js     Foto-Galerie (Pfeiltasten, Escape, Wischen)
 │   │   ├── tag.js          Controller einer Tages-Seite
-│   │   ├── start.js        Startseite: Summen, Übersichtskarte, Fortschritt
-│   │   └── packliste.js    Rendern, Gewichtssummen, Häkchen (localStorage)
+│   │   ├── start.js        Übersichtskarte der Startseite
+│   │   └── packliste.js    Häkchen zum Abpacken (localStorage)
 │   └── vendor/leaflet/     Leaflet 1.9.4 lokal statt unpkg-CDN
 ├── data/
 │   ├── reise.json          Reise-Meta + 14× Etappen-Meta, Übernachtung,
@@ -68,13 +73,20 @@ Statische Multi-Page-Site, weiter reines HTML + Vanilla-JS + Leaflet.
 │   └── tracks/tag-01.json … tag-14.json   generiert: points + waypoints
 ├── fotos/
 │   └── tag-01/  bild.jpg + thumbs/bild.jpg   (pro Tag ein Ordner)
+├── .htaccess               optional: Cache-Zeiten und Kompression
 ├── templates/
-│   ├── tag.html            Vorlage für die Tages-Seiten
-│   └── _kopf.html          Header/Footer-Bausteine für den Generator
+│   ├── _kopf.html          Kopf und Navigation
+│   ├── _fuss.html          Fußzeile und Skript-Einbindung
+│   ├── index.html          Vorlage Startseite
+│   ├── etappen.html        Vorlage Etappenübersicht
+│   ├── tag.html            Vorlage der Tages-Seiten
+│   └── packliste.html      Vorlage Packliste
 ├── tools/
+│   ├── build.py            Vorlagen + data/ → alle 17 HTML-Seiten
+│   ├── extract_original.py Einmal-Migration aus reference/index-original.html
 │   ├── gpx_to_track.py     GPX → data/tracks/*.json + uebersicht.json
-│   ├── fotos_vorbereiten.py  skalieren, Thumbs, Manifest-Gerüst
-│   └── build_tage.py       templates + reise.json → tag-NN.html
+│   ├── fotos_vorbereiten.py  skalieren, Thumbs, Manifest pflegen
+│   └── upload.sh           rsync ins Webhosting (Zugangsdaten aus der Umgebung)
 ├── reference/index-original.html   Ausgangsdatei als Vergleichsbasis
 └── README.md               lokal starten, Tag ergänzen, Fotos, Upload
 ```
@@ -124,7 +136,7 @@ ohne Track-Download rechnen können — `tools/gpx_to_track.py` schreibt sie mit
 
 ### Der Generator
 
-`tools/build_tage.py` füllt `templates/tag.html` pro Etappe. Kein
+`tools/build.py` füllt die Vorlagen aus `templates/`. Kein
 Template-Framework: Platzhalter `{{titel}}`, `{{datum}}`, `{{fotoraster}}` &
 Co. werden per `str.replace` ersetzt.
 
@@ -136,10 +148,14 @@ Fotoraster, Vor/Zurück-Navigation und die Etappen-Sidebar.
 Per JavaScript bleiben nur die interaktiven Teile: Leaflet-Karte,
 Höhenprofil (lädt `data/tracks/tag-07.json`, ~30 KB) und Lightbox.
 
-Der Generator ist idempotent: `python3 tools/build_tage.py` nach jeder
-Änderung an `reise.json` oder am Template neu laufen lassen, Ergebnis
-einchecken. Ein `--check`-Modus vergleicht nur und schlägt an, wenn eine
-eingecheckte Seite veraltet ist.
+Der Generator ist idempotent: `python3 tools/build.py` nach jeder Änderung an
+`reise.json` oder an einer Vorlage neu laufen lassen, Ergebnis einchecken.
+`--check` vergleicht nur und schlägt an, wenn eine eingecheckte Seite veraltet
+ist (`tools/upload.sh` ruft das vor dem Hochladen auf). `--heute JJJJ-MM-TT`
+setzt den Stichtag für gefahren/heute/geplant.
+
+Ein Nebeneffekt der Vorab-Berechnung: der Status friert zum Bauzeitpunkt ein.
+Vor dem Hochladen also neu bauen -- im README vermerkt.
 
 ## 4. Seiten im Detail
 
@@ -239,7 +255,7 @@ schon Blau → Weiß → Rot und passt unverändert.
 | # | Schritt | Ergebnis |
 |---|---|---|
 | 1 | Extraktion: CSS/JS aus der Ausgangsdatei in die Struktur oben, Tracks per Skript nach `data/tracks/`, `reise.json` aus `ROUTES`/`PASSES`/`GAPS` ableiten | eine Tages-Seite funktional gleich wie heute |
-| 2 | `tools/build_tage.py` + `templates/tag.html`, alle 14 Seiten erzeugen, `etappen.html` als Übersicht | Navigation vollständig |
+| 2 | `tools/build.py` + Vorlagen, alle Seiten erzeugen, `etappen.html` als Übersicht | Navigation vollständig |
 | 3 | Retheming Trikolore + Deutsch (`lang`, Strings, `de-DE`-Formate), Dark Mode raus | Optik und Sprache fertig |
 | 4 | `index.html` Startseite + `uebersicht.json` | Landing steht |
 | 5 | `packliste.html` + `data/packliste.json` | Packliste steht |
@@ -259,6 +275,9 @@ verbessert, damit ein späterer Fehler eindeutig einem Schritt zuzuordnen ist.
 - **Fotogröße.** 14 Tage × 10 Bilder ≈ 40 MB im Repo — vertretbar. Originale
   bleiben außerhalb; `fotos_vorbereiten.py` erzeugt die Web-Größen.
 - **Leaflet lokal statt CDN**: 150 KB im Repo, dafür kein Fremd-Ausfall.
+  Die Schriften (Fraunces, Archivo, IBM Plex Mono) kommen weiter von Google
+  Fonts, mit belastbaren Ersatzschriften — mitliefern wäre der nächste Schritt,
+  falls das störend ist.
 - **Fotos-Gesamtgalerie** über alle Tage: leicht nachrüstbar, sobald die
   Manifeste stehen — vorerst nicht eingeplant.
 - **Lokal testen** trotz Hosting-Ziel: `python3 -m http.server` im

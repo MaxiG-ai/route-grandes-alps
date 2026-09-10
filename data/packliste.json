@@ -1,0 +1,487 @@
+{
+  "_hinweis": "Vorlage für eine Alpen-Bikepackingtour mit Zelt. Gewichte sind Erfahrungswerte in Gramm pro Stück und wollen nachgewogen werden. 'wiederMitnehmen': true | false | null (noch offen) erscheint als Fazit-Marke auf der Seite.",
+  "einleitung": "Alles, was auf dem Rad von Karlsruhe nach Isolabona mitgefahren ist. Gewichte pro Stück, ohne Rad, ohne Wasser und ohne Verpflegung unterwegs.",
+  "leergewichte": [
+    {
+      "name": "Rad, fahrfertig ohne Gepäck",
+      "gramm": 11800
+    },
+    {
+      "name": "Wasser (2 Flaschen voll)",
+      "gramm": 1500
+    }
+  ],
+  "gruppen": [
+    {
+      "name": "Taschen & Gepäck",
+      "notiz": "Rahmentasche für Werkzeug, Arschrakete für Kleidung, Lenkerrolle für den Schlafkram.",
+      "posten": [
+        {
+          "name": "Satteltasche 14 l",
+          "anzahl": 1,
+          "gramm": 480,
+          "wiederMitnehmen": true
+        },
+        {
+          "name": "Lenkerrolle 9 l",
+          "anzahl": 1,
+          "gramm": 340,
+          "wiederMitnehmen": true
+        },
+        {
+          "name": "Rahmentasche 3 l",
+          "anzahl": 1,
+          "gramm": 210,
+          "wiederMitnehmen": true
+        },
+        {
+          "name": "Oberrohrtasche",
+          "anzahl": 1,
+          "gramm": 95,
+          "notiz": "Riegel und Powerbank in Reichweite.",
+          "wiederMitnehmen": true
+        },
+        {
+          "name": "Gabeltasche",
+          "anzahl": 2,
+          "gramm": 240,
+          "notiz": "Eine hätte gereicht.",
+          "wiederMitnehmen": false
+        },
+        {
+          "name": "Packsäcke wasserdicht",
+          "anzahl": 3,
+          "gramm": 45
+        },
+        {
+          "name": "Spanngurte",
+          "anzahl": 2,
+          "gramm": 30
+        }
+      ]
+    },
+    {
+      "name": "Schlafen",
+      "notiz": "Auf den Campings der Alpenetappen wird es nachts auf 1.500 m empfindlich kalt.",
+      "posten": [
+        {
+          "name": "Zelt 1P inkl. Heringe",
+          "anzahl": 1,
+          "gramm": 1250,
+          "wiederMitnehmen": true
+        },
+        {
+          "name": "Schlafsack Komfort 4 °C",
+          "anzahl": 1,
+          "gramm": 780,
+          "wiederMitnehmen": true
+        },
+        {
+          "name": "Isomatte aufblasbar",
+          "anzahl": 1,
+          "gramm": 460,
+          "wiederMitnehmen": true
+        },
+        {
+          "name": "Kopfkissen aufblasbar",
+          "anzahl": 1,
+          "gramm": 75
+        },
+        {
+          "name": "Biwaksack / Notunterkunft",
+          "anzahl": 1,
+          "gramm": 180,
+          "notiz": "Nie gebraucht, bleibt trotzdem dabei.",
+          "wiederMitnehmen": true
+        }
+      ]
+    },
+    {
+      "name": "Kleidung am Körper",
+      "notiz": "Zählt nicht zum Gepäckgewicht, gehört aber auf die Liste.",
+      "posten": [
+        {
+          "name": "Trägerhose",
+          "anzahl": 1,
+          "gramm": 210
+        },
+        {
+          "name": "Trikot kurzarm",
+          "anzahl": 1,
+          "gramm": 140
+        },
+        {
+          "name": "Radsocken",
+          "anzahl": 1,
+          "gramm": 60
+        },
+        {
+          "name": "Radschuhe",
+          "anzahl": 1,
+          "gramm": 720
+        },
+        {
+          "name": "Helm",
+          "anzahl": 1,
+          "gramm": 310
+        },
+        {
+          "name": "Handschuhe kurz",
+          "anzahl": 1,
+          "gramm": 55
+        },
+        {
+          "name": "Brille",
+          "anzahl": 1,
+          "gramm": 30
+        }
+      ],
+      "amKoerper": true
+    },
+    {
+      "name": "Kleidung im Gepäck",
+      "notiz": "Zwei Garnituren, jeden Abend eine gewaschen. Für die Pässe über 2.000 m ist die Abfahrtsjacke Pflicht.",
+      "posten": [
+        {
+          "name": "Trägerhose (Wechsel)",
+          "anzahl": 1,
+          "gramm": 210,
+          "wiederMitnehmen": true
+        },
+        {
+          "name": "Trikot (Wechsel)",
+          "anzahl": 1,
+          "gramm": 140,
+          "wiederMitnehmen": true
+        },
+        {
+          "name": "Radsocken (Wechsel)",
+          "anzahl": 2,
+          "gramm": 60
+        },
+        {
+          "name": "Regenjacke",
+          "anzahl": 1,
+          "gramm": 230,
+          "wiederMitnehmen": true
+        },
+        {
+          "name": "Windweste",
+          "anzahl": 1,
+          "gramm": 95,
+          "notiz": "Für lange Abfahrten Gold wert.",
+          "wiederMitnehmen": true
+        },
+        {
+          "name": "Armlinge",
+          "anzahl": 1,
+          "gramm": 70
+        },
+        {
+          "name": "Beinlinge",
+          "anzahl": 1,
+          "gramm": 120
+        },
+        {
+          "name": "Langfingerhandschuhe",
+          "anzahl": 1,
+          "gramm": 70
+        },
+        {
+          "name": "Merino-Longsleeve (Abend)",
+          "anzahl": 1,
+          "gramm": 190
+        },
+        {
+          "name": "Kurze Hose (Abend)",
+          "anzahl": 1,
+          "gramm": 170
+        },
+        {
+          "name": "Unterwäsche",
+          "anzahl": 2,
+          "gramm": 45
+        },
+        {
+          "name": "Badehose",
+          "anzahl": 1,
+          "gramm": 90,
+          "notiz": "Genfer See und Fluss in Isolabona.",
+          "wiederMitnehmen": true
+        },
+        {
+          "name": "Sandalen / Camp-Schuhe",
+          "anzahl": 1,
+          "gramm": 320,
+          "wiederMitnehmen": true
+        },
+        {
+          "name": "Buff",
+          "anzahl": 1,
+          "gramm": 30
+        },
+        {
+          "name": "Daunenjacke leicht",
+          "anzahl": 1,
+          "gramm": 290,
+          "wiederMitnehmen": true
+        }
+      ]
+    },
+    {
+      "name": "Werkzeug & Ersatzteile",
+      "notiz": "Alles, um am Berg selbst weiterzukommen — Ersatzschaltauge ist tourenspezifisch.",
+      "posten": [
+        {
+          "name": "Multitool",
+          "anzahl": 1,
+          "gramm": 165,
+          "wiederMitnehmen": true
+        },
+        {
+          "name": "Minipumpe",
+          "anzahl": 1,
+          "gramm": 110,
+          "wiederMitnehmen": true
+        },
+        {
+          "name": "Ersatzschlauch",
+          "anzahl": 2,
+          "gramm": 105,
+          "wiederMitnehmen": true
+        },
+        {
+          "name": "Flickzeug & Reifenheber",
+          "anzahl": 1,
+          "gramm": 60
+        },
+        {
+          "name": "Kettenschloss + Kettennieter",
+          "anzahl": 1,
+          "gramm": 45
+        },
+        {
+          "name": "Ersatzschaltauge",
+          "anzahl": 1,
+          "gramm": 25,
+          "notiz": "Passend zum Rahmen, wiegt nichts.",
+          "wiederMitnehmen": true
+        },
+        {
+          "name": "Speichen (im Sattelrohr)",
+          "anzahl": 3,
+          "gramm": 12
+        },
+        {
+          "name": "Bremsbeläge (Satz)",
+          "anzahl": 1,
+          "gramm": 40,
+          "notiz": "Nach Galibier und Izoard fast fällig.",
+          "wiederMitnehmen": true
+        },
+        {
+          "name": "Kettenöl klein",
+          "anzahl": 1,
+          "gramm": 55
+        },
+        {
+          "name": "Kabelbinder & Panzertape",
+          "anzahl": 1,
+          "gramm": 35
+        }
+      ]
+    },
+    {
+      "name": "Küche & Verpflegung",
+      "notiz": "Kocher nur für Kaffee und Nudeln — gegessen wurde meist unterwegs.",
+      "posten": [
+        {
+          "name": "Gaskocher",
+          "anzahl": 1,
+          "gramm": 105,
+          "wiederMitnehmen": null
+        },
+        {
+          "name": "Gaskartusche 100 g",
+          "anzahl": 1,
+          "gramm": 190,
+          "wiederMitnehmen": null
+        },
+        {
+          "name": "Topf 700 ml",
+          "anzahl": 1,
+          "gramm": 145,
+          "wiederMitnehmen": null
+        },
+        {
+          "name": "Löffel",
+          "anzahl": 1,
+          "gramm": 15
+        },
+        {
+          "name": "Taschenmesser",
+          "anzahl": 1,
+          "gramm": 60
+        },
+        {
+          "name": "Trinkflasche 750 ml",
+          "anzahl": 2,
+          "gramm": 95
+        },
+        {
+          "name": "Notverpflegung (Riegel)",
+          "anzahl": 4,
+          "gramm": 60
+        },
+        {
+          "name": "Elektrolyt-Tabs",
+          "anzahl": 1,
+          "gramm": 40,
+          "wiederMitnehmen": true
+        }
+      ]
+    },
+    {
+      "name": "Elektronik",
+      "notiz": "Ein Ladegerät für alles, Kabel doppelt.",
+      "posten": [
+        {
+          "name": "Radcomputer + Halter",
+          "anzahl": 1,
+          "gramm": 130,
+          "wiederMitnehmen": true
+        },
+        {
+          "name": "Handy",
+          "anzahl": 1,
+          "gramm": 200
+        },
+        {
+          "name": "Powerbank 10.000 mAh",
+          "anzahl": 1,
+          "gramm": 210,
+          "wiederMitnehmen": true
+        },
+        {
+          "name": "USB-Ladegerät 2-fach",
+          "anzahl": 1,
+          "gramm": 90
+        },
+        {
+          "name": "Ladekabel",
+          "anzahl": 3,
+          "gramm": 25
+        },
+        {
+          "name": "Frontlicht",
+          "anzahl": 1,
+          "gramm": 120,
+          "wiederMitnehmen": true
+        },
+        {
+          "name": "Rücklicht",
+          "anzahl": 1,
+          "gramm": 45,
+          "wiederMitnehmen": true
+        },
+        {
+          "name": "Stirnlampe",
+          "anzahl": 1,
+          "gramm": 55,
+          "notiz": "Für das Zelt unverzichtbar.",
+          "wiederMitnehmen": true
+        },
+        {
+          "name": "Kamera kompakt",
+          "anzahl": 1,
+          "gramm": 320,
+          "wiederMitnehmen": null
+        }
+      ]
+    },
+    {
+      "name": "Hygiene & Erste Hilfe",
+      "posten": [
+        {
+          "name": "Zahnbürste & Zahnpasta",
+          "anzahl": 1,
+          "gramm": 65
+        },
+        {
+          "name": "Handtuch Mikrofaser",
+          "anzahl": 1,
+          "gramm": 120
+        },
+        {
+          "name": "Duschgel / Waschmittel",
+          "anzahl": 1,
+          "gramm": 100,
+          "notiz": "Ein Fläschchen für beides.",
+          "wiederMitnehmen": true
+        },
+        {
+          "name": "Sonnencreme LSF 50",
+          "anzahl": 1,
+          "gramm": 100,
+          "wiederMitnehmen": true
+        },
+        {
+          "name": "Sitzcreme",
+          "anzahl": 1,
+          "gramm": 75,
+          "wiederMitnehmen": true
+        },
+        {
+          "name": "Erste-Hilfe-Set klein",
+          "anzahl": 1,
+          "gramm": 180,
+          "wiederMitnehmen": true
+        },
+        {
+          "name": "Schmerztabletten",
+          "anzahl": 1,
+          "gramm": 20
+        },
+        {
+          "name": "Ohrstöpsel",
+          "anzahl": 1,
+          "gramm": 5,
+          "notiz": "Auf Campingplätzen unbezahlbar.",
+          "wiederMitnehmen": true
+        }
+      ]
+    },
+    {
+      "name": "Papiere & Geld",
+      "posten": [
+        {
+          "name": "Ausweis",
+          "anzahl": 1,
+          "gramm": 10
+        },
+        {
+          "name": "Krankenversicherungskarte (EHIC)",
+          "anzahl": 1,
+          "gramm": 5
+        },
+        {
+          "name": "Bankkarte & Kreditkarte",
+          "anzahl": 2,
+          "gramm": 5
+        },
+        {
+          "name": "Bargeld",
+          "anzahl": 1,
+          "gramm": 30,
+          "notiz": "Kleine Campings in den Alpen nehmen oft nur Bares."
+        },
+        {
+          "name": "Fahrradschloss leicht",
+          "anzahl": 1,
+          "gramm": 320,
+          "wiederMitnehmen": null
+        }
+      ]
+    }
+  ]
+}

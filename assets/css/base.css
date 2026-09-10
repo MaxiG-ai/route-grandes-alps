@@ -1,0 +1,174 @@
+/* ==========================================================================
+   base.css -- Farb-Tokens, Typografie, Grundraster, Kopf und Fuß
+   Trikolore (Blau/Weiß/Rot) auf weißem Grund. Bewusst kein Dark Mode.
+   ========================================================================== */
+
+:root{
+  /* Flächen */
+  --blanc:#ffffff;          /* Seitengrund */
+  --papier:#f6f7fa;         /* Karten, Sidebar, Tabellenkopf */
+  --papier-tief:#eceff5;    /* Hover, Balkengrund */
+  --linie:#dfe4ee;
+  --linie-stark:#c6cedd;
+
+  /* Trikolore */
+  --bleu:#0055a4;           /* Primär: Links, aktive Etappe, Marker */
+  --bleu-tief:#003d78;      /* blauer Text auf Weiß, Hover */
+  --bleu-blass:#e8f0fa;     /* blaue Fläche hinter Text */
+  --rouge:#ef4135;          /* Akzent: Flächen, Kanten, Marker */
+  --rouge-tief:#c8102e;     /* roter Text auf Weiß (Kontrast ~5,9:1) */
+  --rouge-blass:#fdeceb;
+
+  /* Schrift */
+  --ink:#111827;
+  --ink-soft:#4a5568;
+  --ink-faint:#7b859b;
+  --auf-bleu:#ffffff;
+
+  /* Maße */
+  --spalte:1180px;          /* Inhaltsbreite */
+  --lesespalte:64ch;        /* Textbreite für Prosa */
+  --radius:12px;
+  --radius-klein:8px;
+  --schatten:0 1px 2px rgba(17,24,39,.05), 0 8px 24px -12px rgba(17,24,39,.18);
+
+  --serif:'Fraunces',Georgia,'Times New Roman',serif;
+  --sans:'Archivo','Helvetica Neue',Arial,sans-serif;
+  --mono:'IBM Plex Mono','SFMono-Regular',Consolas,monospace;
+
+  color-scheme: light;
+}
+
+*{ box-sizing:border-box; }
+html{ -webkit-text-size-adjust:100%; }
+body{
+  margin:0; background:var(--blanc); color:var(--ink);
+  font-family:var(--sans); font-size:15px; line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{ font-family:var(--serif); font-weight:600; margin:0; text-wrap:balance; }
+h1{ font-size:clamp(28px,4.4vw,44px); line-height:1.07; letter-spacing:-.01em; }
+h2{ font-size:clamp(21px,2.6vw,27px); line-height:1.15; }
+h3{ font-size:18px; line-height:1.2; }
+p{ margin:0 0 1em; }
+a{ color:var(--bleu); text-decoration-thickness:1px; text-underline-offset:2px; }
+a:hover{ color:var(--bleu-tief); }
+img{ max-width:100%; display:block; }
+button{ font-family:inherit; color:inherit; }
+:focus-visible{ outline:2.5px solid var(--bleu); outline-offset:2px; border-radius:3px; }
+
+.mono{ font-family:var(--mono); font-variant-numeric:tabular-nums; }
+.eyebrow{
+  margin:0 0 6px; font-size:11px; font-weight:700; letter-spacing:.11em;
+  text-transform:uppercase; color:var(--ink-faint);
+}
+.nur-sr{
+  position:absolute; width:1px; height:1px; padding:0; margin:-1px;
+  overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;
+}
+
+/* --- Trikolore-Leiste ---------------------------------------------------- */
+.tricolore{
+  height:3px; flex:0 0 3px;
+  background:linear-gradient(to right,
+    var(--bleu) 0 33.333%, var(--blanc) 33.333% 66.666%, var(--rouge) 66.666% 100%);
+}
+.tricolore-linie{
+  height:2px; border:0; margin:0;
+  background:linear-gradient(to right,
+    var(--bleu) 0 33.333%, var(--linie) 33.333% 66.666%, var(--rouge) 66.666% 100%);
+}
+
+/* --- Raster -------------------------------------------------------------- */
+.wrap{ width:100%; max-width:var(--spalte); margin-inline:auto; padding-inline:20px; }
+.abschnitt{ padding-block:clamp(34px,5vw,60px); }
+.abschnitt-kopf{ display:flex; align-items:baseline; gap:14px; flex-wrap:wrap; margin-bottom:20px; }
+.abschnitt-kopf p{ margin:0; color:var(--ink-soft); font-size:14px; }
+
+/* --- Kopfzeile ----------------------------------------------------------- */
+.site-head{ position:sticky; top:0; z-index:600; background:var(--blanc); box-shadow:0 1px 0 var(--linie); }
+.site-head-inner{
+  display:flex; align-items:center; gap:10px 26px; flex-wrap:wrap;
+  max-width:var(--spalte); margin-inline:auto; padding:11px 20px;
+}
+.marke{
+  font-family:var(--serif); font-size:17px; font-weight:600; color:var(--ink);
+  text-decoration:none; line-height:1.1; margin-right:auto;
+}
+.marke span{ display:block; font-family:var(--sans); font-size:10.5px; font-weight:600;
+  letter-spacing:.1em; text-transform:uppercase; color:var(--ink-faint); }
+.site-nav{ display:flex; gap:4px; flex-wrap:wrap; }
+.site-nav a{
+  font-size:13.5px; font-weight:600; color:var(--ink-soft); text-decoration:none;
+  padding:6px 11px; border-radius:var(--radius-klein);
+}
+.site-nav a:hover{ background:var(--papier-tief); color:var(--ink); }
+.site-nav a[aria-current="page"]{ background:var(--bleu); color:var(--auf-bleu); }
+
+/* --- Fußzeile ------------------------------------------------------------ */
+.site-foot{ margin-top:auto; background:var(--papier); border-top:1px solid var(--linie); }
+.site-foot .wrap{ padding-block:26px 34px; }
+.site-foot p{ margin:0 0 8px; font-size:12.5px; line-height:1.6; color:var(--ink-faint); max-width:70ch; }
+.site-foot a{ color:var(--bleu-tief); }
+
+body{ display:flex; flex-direction:column; min-height:100vh; }
+main{ flex:1 0 auto; }
+
+/* --- Kennzahlen ---------------------------------------------------------- */
+.kennzahlen{ display:flex; flex-wrap:wrap; gap:10px 30px; margin:0; padding:0; }
+.kennzahlen > div{ display:flex; flex-direction:column; gap:1px; }
+.kennzahlen dt{ font-size:10px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-faint); }
+.kennzahlen dd{ margin:0; font-family:var(--mono); font-variant-numeric:tabular-nums; font-size:17px; font-weight:600; }
+.wert-auf{ color:var(--bleu-tief); }
+.wert-ab{ color:var(--rouge-tief); }
+
+/* --- Statusfarben (gefahren / heute / geplant) --------------------------- */
+.status{
+  display:inline-flex; align-items:center; gap:5px; font-size:11px; font-weight:700;
+  letter-spacing:.05em; text-transform:uppercase; padding:2px 8px; border-radius:999px;
+}
+.status::before{ content:""; width:6px; height:6px; border-radius:50%; background:currentColor; }
+.status-gefahren{ background:var(--bleu-blass); color:var(--bleu-tief); }
+.status-heute{ background:var(--rouge-blass); color:var(--rouge-tief); }
+.status-geplant{ background:var(--papier-tief); color:var(--ink-soft); }
+
+/* --- Fortschritt --------------------------------------------------------- */
+.fortschritt{ height:6px; border-radius:3px; background:var(--papier-tief); overflow:hidden; }
+.fortschritt i{ display:block; height:100%; background:var(--bleu); border-radius:3px; }
+.fortschritt-note{ margin:7px 0 0; font-size:12px; color:var(--ink-faint); }
+
+/* --- Chips: Pässe, Strava ------------------------------------------------ */
+.chips{ display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
+.pass-chip{
+  display:inline-flex; align-items:baseline; gap:6px; font-size:12.5px;
+  padding:3px 9px; border-radius:999px; text-decoration:none;
+  background:var(--bleu-blass); color:var(--bleu-tief); border:1px solid transparent;
+}
+.pass-chip:hover{ border-color:var(--bleu); }
+.pass-chip b{ font-weight:600; }
+.pass-chip .hoehe{ font-family:var(--mono); font-size:11px; color:var(--ink-faint); }
+.pass-chip.manuell{ border-style:dashed; border-color:var(--linie-stark); }
+.pass-chip.ohne-link{ background:var(--papier-tief); color:var(--ink-soft); }
+.chip-leer{ font-size:12.5px; color:var(--ink-faint); }
+
+.strava{
+  display:inline-flex; align-items:center; gap:6px; font-size:12px; font-weight:600;
+  text-decoration:none; color:#fff; background:#fc4c02; padding:4px 10px; border-radius:var(--radius-klein);
+}
+.strava:hover{ background:#e04402; color:#fff; }
+.strava.stumm{
+  background:transparent; color:var(--ink-faint); font-weight:500;
+  border:1px solid var(--linie); cursor:default;
+}
+
+/* --- Karten (Flächen) ---------------------------------------------------- */
+.karte-flaeche{
+  background:var(--blanc); border:1px solid var(--linie); border-radius:var(--radius);
+  padding:18px 20px;
+}
+.leer-hinweis{
+  border:1px dashed var(--linie-stark); border-radius:var(--radius);
+  padding:16px 18px; color:var(--ink-faint); font-size:13.5px; background:var(--papier);
+}
+
+@media (prefers-reduced-motion:reduce){ *{ transition:none !important; animation:none !important; } }
