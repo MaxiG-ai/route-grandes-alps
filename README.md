@@ -44,6 +44,7 @@ Deshalb: vor dem Hochladen einmal neu bauen.
 |---|---|---|
 | `data/reise.json` | Etappen-Eckdaten, Pässe, Strava, Übernachtung, Zusammenfassung, Fotoliste | **von Hand** |
 | `data/packliste.json` | Packliste nach Gruppen | **von Hand** |
+| `data/wegpunkte.json` | deutsche Namen für die Zwischenziele aus der komoot-Planung | **von Hand** |
 | `data/tracks/tag-NN.json` | Trackpunkte und Wegpunkte einer Etappe (~30 KB, wird erst beim Öffnen der Etappe geladen) | erzeugt |
 | `data/uebersicht.json` | ausgedünnte Geometrie aller Etappen für die Startseitenkarte | erzeugt |
 | `fotos/tag-NN/` | Bilder in Webgröße plus `thumbs/` | erzeugt aus Originalen |
@@ -89,6 +90,20 @@ Skaliert auf max. 1600 px, baut 400-px-Thumbs, richtet gedrehte Handyfotos auf
 und schreibt die Dateiliste nach `data/reise.json`. Die Bildtitel kommen von
 Hand dazu (`"titel"`), sie sind `alt`-Text und Bildunterschrift in der Lightbox.
 Braucht Pillow: `pip install Pillow`. Details in `fotos/README.md`.
+
+### Zwischenziele umbenennen
+
+Die Wegpunkte kommen englisch aus komoot (`Shaded Cycle Path`) und stecken in
+den erzeugten Trackdateien. Übersetzt werden sie deshalb in
+`data/wegpunkte.json`:
+
+```json
+"namen": { "Shaded Cycle Path": "Schattiger Radweg" }
+```
+
+Namen ohne Eintrag erscheinen unverändert — Eigennamen wie `Col de Vars` oder
+`Edeka Kohler` brauchen also keinen. Die Tabelle überlebt jedes Neuerzeugen
+der Tracks; ein Neubauen ist nicht nötig, die Karte liest sie zur Laufzeit.
 
 ### Eine Etappe hinzufügen oder einen Track ersetzen
 

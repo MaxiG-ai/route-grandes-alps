@@ -69,6 +69,7 @@ Statische Multi-Page-Site, weiter reines HTML + Vanilla-JS + Leaflet.
 │   ├── reise.json          Reise-Meta + 14× Etappen-Meta, Übernachtung,
 │   │                       Zusammenfassung, Pässe, Strava, Foto-Manifest
 │   ├── packliste.json      Kategorien → Gegenstände (Gewicht, Anzahl, Notiz)
+│   ├── wegpunkte.json      deutsche Namen der komoot-Zwischenziele
 │   ├── uebersicht.json     ausgedünnte Geometrie aller 14 Tage (~30 KB)
 │   └── tracks/tag-01.json … tag-14.json   generiert: points + waypoints
 ├── fotos/
@@ -280,5 +281,10 @@ verbessert, damit ein späterer Fehler eindeutig einem Schritt zuzuordnen ist.
   falls das störend ist.
 - **Fotos-Gesamtgalerie** über alle Tage: leicht nachrüstbar, sobald die
   Manifeste stehen — vorerst nicht eingeplant.
+- **Wegpunktnamen** kamen englisch aus komoot und stecken in den erzeugten
+  Trackdateien. Gelöst über `data/wegpunkte.json`: eine Tabelle
+  Original → Deutsch, die die Karte zur Laufzeit anwendet und die jedes
+  Neuerzeugen der Tracks übersteht. 38 Namen übersetzt, 24 Eigennamen
+  (`Col de Vars`, `Edeka Kohler`) bleiben.
 - **Lokal testen** trotz Hosting-Ziel: `python3 -m http.server` im
   Projektordner, dann `http://localhost:8000`.

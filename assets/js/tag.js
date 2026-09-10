@@ -16,14 +16,27 @@
   const tip = document.getElementById('profilTip');
   let cursor = null;
 
-  fetch('data/tracks/' + meta.id + '.json')
-    .then(a => { if(!a.ok) throw new Error(a.status + ' ' + a.statusText); return a.json(); })
-    .then(track => {
+  /* Wegpunktnamen kommen englisch aus der komoot-Planung; data/wegpunkte.json
+     übersetzt sie, ohne die erzeugten Trackdateien anzufassen. Fehlt die Datei,
+     bleiben die Originalnamen stehen. */
+  const namenFertig = fetch('data/wegpunkte.json')
+    .then(a => a.ok ? a.json() : {})
+    .then(d => (d && d.namen) || {})
+    .catch(() => ({}));
+
+  Promise.all([
+    fetch('data/tracks/' + meta.id + '.json')
+      .then(a => { if(!a.ok) throw new Error(a.status + ' ' + a.statusText); return a.json(); }),
+    namenFertig,
+  ])
+    .then(([track, namen]) => {
       const latlngs = track.punkte.map(p => [p.lat, p.lon]);
       RGA.karte.linie(gruppe, latlngs, meta.status);
       RGA.karte.markerStart(gruppe, latlngs[0], meta.von);
       RGA.karte.markerZiel(gruppe, latlngs[latlngs.length - 1], meta.nach);
-      for(const w of track.wegpunkte) RGA.karte.markerWegpunkt(gruppe, [w.lat, w.lon], w.name);
+      for(const w of track.wegpunkte){
+        RGA.karte.markerWegpunkt(gruppe, [w.lat, w.lon], namen[w.name] || w.name);
+      }
       if(meta.bett) RGA.karte.markerBett(gruppe, meta.bett.pos, meta.bett.html);
 
       cursor = L.circleMarker(latlngs[0], {
