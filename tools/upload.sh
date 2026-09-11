@@ -1,34 +1,37 @@
 #!/usr/bin/env bash
-# Lädt die Website ins Hetzner Webhosting. Zugangsdaten kommen aus der
-# Umgebung -- niemals ins Repo schreiben.
+# Uploads the site to the Hetzner web hosting. Credentials come from the
+# environment -- never put them in the repo.
 #
-#   export RGA_HOST=wXXXXXX.kasserver.com     # oder ssh-Host aus KonsoleH
+#   export RGA_HOST=wXXXXXX.kasserver.com     # or the SSH host from KonsoleH
 #   export RGA_USER=uXXXXXX
-#   export RGA_PFAD=/public_html              # Zielordner auf dem Server
-#   ./tools/upload.sh                          # überträgt alles Nötige
-#   ./tools/upload.sh --trocken                # zeigt nur, was passieren würde
+#   export RGA_PATH=/public_html              # target directory on the server
+#   ./tools/upload.sh                          # transfer everything needed
+#   ./tools/upload.sh --dry-run                # show what would happen
 #
-# Übertragen werden genau die Dateien, die die Website braucht. tools/,
-# templates/, docs/, reference/ und .git bleiben lokal.
+# Only the files the site needs go up. tools/, templates/, docs/, gpx/,
+# reference/ and .git stay local.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
-: "${RGA_HOST:?RGA_HOST ist nicht gesetzt}"
-: "${RGA_USER:?RGA_USER ist nicht gesetzt}"
-PFAD="${RGA_PFAD:-/public_html}"
+: "${RGA_HOST:?RGA_HOST is not set}"
+: "${RGA_USER:?RGA_USER is not set}"
+TARGET_PATH="${RGA_PATH:-/public_html}"
 
-TROCKEN=()
-if [[ "${1:-}" == "--trocken" ]]; then TROCKEN=(--dry-run); echo "== Trockenlauf =="; fi
+DRY_RUN=()
+if [[ "${1:-}" == "--dry-run" ]]; then
+  DRY_RUN=(--dry-run)
+  echo "== dry run =="
+fi
 
-# Sicherheitsnetz: veraltete Seiten würden sonst mit hochgehen.
+# Safety net: stale pages would otherwise go up with everything else.
 python3 tools/build.py --check
 
-INHALT=(index.html etappen.html packliste.html assets data fotos .htaccess)
-while IFS= read -r seite; do INHALT+=("$seite"); done < <(ls tag-*.html)
+CONTENT=(index.html stages.html packing-list.html assets data photos .htaccess)
+while IFS= read -r stage_page; do CONTENT+=("$stage_page"); done < <(ls day-*.html)
 
-echo "== Upload nach ${RGA_USER}@${RGA_HOST}:${PFAD} =="
-rsync -avz --delete "${TROCKEN[@]}" \
+echo "== uploading to ${RGA_USER}@${RGA_HOST}:${TARGET_PATH} =="
+rsync -avz --delete "${DRY_RUN[@]}" \
   --exclude '.DS_Store' --exclude 'README.md' \
-  "${INHALT[@]}" "${RGA_USER}@${RGA_HOST}:${PFAD}/"
+  "${CONTENT[@]}" "${RGA_USER}@${RGA_HOST}:${TARGET_PATH}/"
 
-echo "== Fertig. Zur Kontrolle eine Etappenseite direkt aufrufen, z. B. .../tag-07.html =="
+echo "== done. Open a stage page directly to check, e.g. .../day-07.html =="

@@ -1,0 +1,487 @@
+{
+  "_note": "Template for an alpine bikepacking trip with a tent. Weights are in grams per item and want checking on a scale. 'takeAgain': true | false | null (undecided) shows up as a verdict badge on the page.",
+  "intro": "Alles, was auf dem Rad von Karlsruhe nach Isolabona mitgefahren ist. Gewichte pro Stück, ohne Rad, ohne Wasser und ohne Verpflegung unterwegs.",
+  "baseWeights": [
+    {
+      "name": "Rad, fahrfertig ohne Gepäck",
+      "grams": 11800
+    },
+    {
+      "name": "Wasser (2 Flaschen voll)",
+      "grams": 1500
+    }
+  ],
+  "groups": [
+    {
+      "name": "Taschen & Gepäck",
+      "note": "Rahmentasche für Werkzeug, Arschrakete für Kleidung, Lenkerrolle für den Schlafkram.",
+      "items": [
+        {
+          "name": "Satteltasche 14 l",
+          "qty": 1,
+          "grams": 480,
+          "takeAgain": true
+        },
+        {
+          "name": "Lenkerrolle 9 l",
+          "qty": 1,
+          "grams": 340,
+          "takeAgain": true
+        },
+        {
+          "name": "Rahmentasche 3 l",
+          "qty": 1,
+          "grams": 210,
+          "takeAgain": true
+        },
+        {
+          "name": "Oberrohrtasche",
+          "qty": 1,
+          "grams": 95,
+          "note": "Riegel und Powerbank in Reichweite.",
+          "takeAgain": true
+        },
+        {
+          "name": "Gabeltasche",
+          "qty": 2,
+          "grams": 240,
+          "note": "Eine hätte gereicht.",
+          "takeAgain": false
+        },
+        {
+          "name": "Packsäcke wasserdicht",
+          "qty": 3,
+          "grams": 45
+        },
+        {
+          "name": "Spanngurte",
+          "qty": 2,
+          "grams": 30
+        }
+      ]
+    },
+    {
+      "name": "Schlafen",
+      "note": "Auf den Campings der Alpenetappen wird es nachts auf 1.500 m empfindlich kalt.",
+      "items": [
+        {
+          "name": "Zelt 1P inkl. Heringe",
+          "qty": 1,
+          "grams": 1250,
+          "takeAgain": true
+        },
+        {
+          "name": "Schlafsack Komfort 4 °C",
+          "qty": 1,
+          "grams": 780,
+          "takeAgain": true
+        },
+        {
+          "name": "Isomatte aufblasbar",
+          "qty": 1,
+          "grams": 460,
+          "takeAgain": true
+        },
+        {
+          "name": "Kopfkissen aufblasbar",
+          "qty": 1,
+          "grams": 75
+        },
+        {
+          "name": "Biwaksack / Notunterkunft",
+          "qty": 1,
+          "grams": 180,
+          "note": "Nie gebraucht, bleibt trotzdem dabei.",
+          "takeAgain": true
+        }
+      ]
+    },
+    {
+      "name": "Kleidung am Körper",
+      "note": "Zählt nicht zum Gepäckgewicht, gehört aber auf die Liste.",
+      "wornOnBody": true,
+      "items": [
+        {
+          "name": "Trägerhose",
+          "qty": 1,
+          "grams": 210
+        },
+        {
+          "name": "Trikot kurzarm",
+          "qty": 1,
+          "grams": 140
+        },
+        {
+          "name": "Radsocken",
+          "qty": 1,
+          "grams": 60
+        },
+        {
+          "name": "Radschuhe",
+          "qty": 1,
+          "grams": 720
+        },
+        {
+          "name": "Helm",
+          "qty": 1,
+          "grams": 310
+        },
+        {
+          "name": "Handschuhe kurz",
+          "qty": 1,
+          "grams": 55
+        },
+        {
+          "name": "Brille",
+          "qty": 1,
+          "grams": 30
+        }
+      ]
+    },
+    {
+      "name": "Kleidung im Gepäck",
+      "note": "Zwei Garnituren, jeden Abend eine gewaschen. Für die Pässe über 2.000 m ist die Abfahrtsjacke Pflicht.",
+      "items": [
+        {
+          "name": "Trägerhose (Wechsel)",
+          "qty": 1,
+          "grams": 210,
+          "takeAgain": true
+        },
+        {
+          "name": "Trikot (Wechsel)",
+          "qty": 1,
+          "grams": 140,
+          "takeAgain": true
+        },
+        {
+          "name": "Radsocken (Wechsel)",
+          "qty": 2,
+          "grams": 60
+        },
+        {
+          "name": "Regenjacke",
+          "qty": 1,
+          "grams": 230,
+          "takeAgain": true
+        },
+        {
+          "name": "Windweste",
+          "qty": 1,
+          "grams": 95,
+          "note": "Für lange Abfahrten Gold wert.",
+          "takeAgain": true
+        },
+        {
+          "name": "Armlinge",
+          "qty": 1,
+          "grams": 70
+        },
+        {
+          "name": "Beinlinge",
+          "qty": 1,
+          "grams": 120
+        },
+        {
+          "name": "Langfingerhandschuhe",
+          "qty": 1,
+          "grams": 70
+        },
+        {
+          "name": "Merino-Longsleeve (Abend)",
+          "qty": 1,
+          "grams": 190
+        },
+        {
+          "name": "Kurze Hose (Abend)",
+          "qty": 1,
+          "grams": 170
+        },
+        {
+          "name": "Unterwäsche",
+          "qty": 2,
+          "grams": 45
+        },
+        {
+          "name": "Badehose",
+          "qty": 1,
+          "grams": 90,
+          "note": "Genfer See und Fluss in Isolabona.",
+          "takeAgain": true
+        },
+        {
+          "name": "Sandalen / Camp-Schuhe",
+          "qty": 1,
+          "grams": 320,
+          "takeAgain": true
+        },
+        {
+          "name": "Buff",
+          "qty": 1,
+          "grams": 30
+        },
+        {
+          "name": "Daunenjacke leicht",
+          "qty": 1,
+          "grams": 290,
+          "takeAgain": true
+        }
+      ]
+    },
+    {
+      "name": "Werkzeug & Ersatzteile",
+      "note": "Alles, um am Berg selbst weiterzukommen — Ersatzschaltauge ist tourenspezifisch.",
+      "items": [
+        {
+          "name": "Multitool",
+          "qty": 1,
+          "grams": 165,
+          "takeAgain": true
+        },
+        {
+          "name": "Minipumpe",
+          "qty": 1,
+          "grams": 110,
+          "takeAgain": true
+        },
+        {
+          "name": "Ersatzschlauch",
+          "qty": 2,
+          "grams": 105,
+          "takeAgain": true
+        },
+        {
+          "name": "Flickzeug & Reifenheber",
+          "qty": 1,
+          "grams": 60
+        },
+        {
+          "name": "Kettenschloss + Kettennieter",
+          "qty": 1,
+          "grams": 45
+        },
+        {
+          "name": "Ersatzschaltauge",
+          "qty": 1,
+          "grams": 25,
+          "note": "Passend zum Rahmen, wiegt nichts.",
+          "takeAgain": true
+        },
+        {
+          "name": "Speichen (im Sattelrohr)",
+          "qty": 3,
+          "grams": 12
+        },
+        {
+          "name": "Bremsbeläge (Satz)",
+          "qty": 1,
+          "grams": 40,
+          "note": "Nach Galibier und Izoard fast fällig.",
+          "takeAgain": true
+        },
+        {
+          "name": "Kettenöl klein",
+          "qty": 1,
+          "grams": 55
+        },
+        {
+          "name": "Kabelbinder & Panzertape",
+          "qty": 1,
+          "grams": 35
+        }
+      ]
+    },
+    {
+      "name": "Küche & Verpflegung",
+      "note": "Kocher nur für Kaffee und Nudeln — gegessen wurde meist unterwegs.",
+      "items": [
+        {
+          "name": "Gaskocher",
+          "qty": 1,
+          "grams": 105,
+          "takeAgain": null
+        },
+        {
+          "name": "Gaskartusche 100 g",
+          "qty": 1,
+          "grams": 190,
+          "takeAgain": null
+        },
+        {
+          "name": "Topf 700 ml",
+          "qty": 1,
+          "grams": 145,
+          "takeAgain": null
+        },
+        {
+          "name": "Löffel",
+          "qty": 1,
+          "grams": 15
+        },
+        {
+          "name": "Taschenmesser",
+          "qty": 1,
+          "grams": 60
+        },
+        {
+          "name": "Trinkflasche 750 ml",
+          "qty": 2,
+          "grams": 95
+        },
+        {
+          "name": "Notverpflegung (Riegel)",
+          "qty": 4,
+          "grams": 60
+        },
+        {
+          "name": "Elektrolyt-Tabs",
+          "qty": 1,
+          "grams": 40,
+          "takeAgain": true
+        }
+      ]
+    },
+    {
+      "name": "Elektronik",
+      "note": "Ein Ladegerät für alles, Kabel doppelt.",
+      "items": [
+        {
+          "name": "Radcomputer + Halter",
+          "qty": 1,
+          "grams": 130,
+          "takeAgain": true
+        },
+        {
+          "name": "Handy",
+          "qty": 1,
+          "grams": 200
+        },
+        {
+          "name": "Powerbank 10.000 mAh",
+          "qty": 1,
+          "grams": 210,
+          "takeAgain": true
+        },
+        {
+          "name": "USB-Ladegerät 2-fach",
+          "qty": 1,
+          "grams": 90
+        },
+        {
+          "name": "Ladekabel",
+          "qty": 3,
+          "grams": 25
+        },
+        {
+          "name": "Frontlicht",
+          "qty": 1,
+          "grams": 120,
+          "takeAgain": true
+        },
+        {
+          "name": "Rücklicht",
+          "qty": 1,
+          "grams": 45,
+          "takeAgain": true
+        },
+        {
+          "name": "Stirnlampe",
+          "qty": 1,
+          "grams": 55,
+          "note": "Für das Zelt unverzichtbar.",
+          "takeAgain": true
+        },
+        {
+          "name": "Kamera kompakt",
+          "qty": 1,
+          "grams": 320,
+          "takeAgain": null
+        }
+      ]
+    },
+    {
+      "name": "Hygiene & Erste Hilfe",
+      "items": [
+        {
+          "name": "Zahnbürste & Zahnpasta",
+          "qty": 1,
+          "grams": 65
+        },
+        {
+          "name": "Handtuch Mikrofaser",
+          "qty": 1,
+          "grams": 120
+        },
+        {
+          "name": "Duschgel / Waschmittel",
+          "qty": 1,
+          "grams": 100,
+          "note": "Ein Fläschchen für beides.",
+          "takeAgain": true
+        },
+        {
+          "name": "Sonnencreme LSF 50",
+          "qty": 1,
+          "grams": 100,
+          "takeAgain": true
+        },
+        {
+          "name": "Sitzcreme",
+          "qty": 1,
+          "grams": 75,
+          "takeAgain": true
+        },
+        {
+          "name": "Erste-Hilfe-Set klein",
+          "qty": 1,
+          "grams": 180,
+          "takeAgain": true
+        },
+        {
+          "name": "Schmerztabletten",
+          "qty": 1,
+          "grams": 20
+        },
+        {
+          "name": "Ohrstöpsel",
+          "qty": 1,
+          "grams": 5,
+          "note": "Auf Campingplätzen unbezahlbar.",
+          "takeAgain": true
+        }
+      ]
+    },
+    {
+      "name": "Papiere & Geld",
+      "items": [
+        {
+          "name": "Ausweis",
+          "qty": 1,
+          "grams": 10
+        },
+        {
+          "name": "Krankenversicherungskarte (EHIC)",
+          "qty": 1,
+          "grams": 5
+        },
+        {
+          "name": "Bankkarte & Kreditkarte",
+          "qty": 2,
+          "grams": 5
+        },
+        {
+          "name": "Bargeld",
+          "qty": 1,
+          "grams": 30,
+          "note": "Kleine Campings in den Alpen nehmen oft nur Bares."
+        },
+        {
+          "name": "Fahrradschloss leicht",
+          "qty": 1,
+          "grams": 320,
+          "takeAgain": null
+        }
+      ]
+    }
+  ]
+}

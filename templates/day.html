@@ -1,0 +1,62 @@
+<section class="wrap day-head">
+  <div class="day-head-meta">
+    <span class="index">Tag {{no}} von {{count}}</span>
+    <span class="date">{{date}}</span>
+    {{status_badge}}
+  </div>
+  <h1>{{from}} <span class="arrow">→</span> {{to}}</h1>
+  {{gap}}
+  <dl class="stats">{{stats}}</dl>
+</section>
+
+<div class="day-map-block">
+  <div class="day-bar">
+    <div class="day-bar-group">
+      <span class="day-bar-label">{{pass_label}}</span>
+      <div class="chips">{{passes}}</div>
+    </div>
+    <div class="day-bar-group right">
+      <span class="day-bar-label">Auf Strava</span>
+      <div class="chips">{{strava}}</div>
+    </div>
+    <div class="layer-toggle" id="layerToggle" role="group" aria-label="Kartenstil">
+      <button type="button" data-layer="terrain" class="active">Gelände</button>
+      <button type="button" data-layer="streets">Straßen</button>
+    </div>
+  </div>
+  <div class="map-and-profile">
+    <div class="day-map" id="map"></div>
+    <div class="profile-block">
+      <svg id="profileSvg" viewBox="0 0 1000 220" preserveAspectRatio="none" role="img"
+           aria-label="Höhenprofil der Etappe: {{profile_label}}"></svg>
+      <div class="profile-tip mono" id="profileTip"></div>
+    </div>
+    <p class="profile-hint">Über das Höhenprofil fahren zeigt die Stelle auf der Karte. Punkte auf der Route sind Zwischenziele aus der Planung.</p>
+  </div>
+</div>
+
+<div class="wrap day-body">
+  <section class="day-section">
+    <h2>Übernachtung</h2>
+    {{lodging}}
+  </section>
+
+  <section class="day-section">
+    <h2>Zusammenfassung</h2>
+    {{summary}}
+  </section>
+
+  <section class="day-section">
+    <h2>Fotos {{photo_count}}</h2>
+    {{photos}}
+  </section>
+</div>
+
+<nav class="wrap day-nav" aria-label="Nachbaretappen">{{neighbours}}</nav>
+
+<section class="all-stages">
+  <div class="wrap">
+    <h2>Alle Etappen</h2>
+    <div class="stage-strip">{{strip}}</div>
+  </div>
+</section>

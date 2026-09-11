@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Rhein bis Riviera — Bikepacking auf der Route des Grandes Alpes</title>
-<meta name="description" content="1.264,7 km und +21.846 m von Karlsruhe nach Isolabona: 14 Etappen mit Karten, Höhenprofilen, Übernachtungen, Fotos und Packliste.">
+<meta name="description" content="1.251,4 km und +21.187 m von Karlsruhe nach Isolabona: 14 Etappen mit Karten, Höhenprofilen, Übernachtungen, Fotos und Packliste.">
 <meta property="og:title" content="Rhein bis Riviera — Bikepacking auf der Route des Grandes Alpes">
-<meta property="og:description" content="1.264,7 km und +21.846 m von Karlsruhe nach Isolabona: 14 Etappen mit Karten, Höhenprofilen, Übernachtungen, Fotos und Packliste.">
+<meta property="og:description" content="1.251,4 km und +21.187 m von Karlsruhe nach Isolabona: 14 Etappen mit Karten, Höhenprofilen, Übernachtungen, Fotos und Packliste.">
 <meta property="og:type" content="website">
 <meta name="theme-color" content="#0055a4">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 3 2'%3E%3Crect width='1' height='2' fill='%230055a4'/%3E%3Crect x='1' width='1' height='2' fill='%23fff'/%3E%3Crect x='2' width='1' height='2' fill='%23ef4135'/%3E%3C/svg%3E">
@@ -18,92 +18,92 @@
 <link rel="stylesheet" href="assets/vendor/leaflet/leaflet.css">
 </head>
 <body>
-<a class="nur-sr" href="#inhalt">Zum Inhalt springen</a>
+<a class="sr-only" href="#content">Zum Inhalt springen</a>
 <header class="site-head">
   <div class="tricolore" aria-hidden="true"></div>
   <div class="site-head-inner">
-    <a class="marke" href="index.html">Rhein bis Riviera<span>Route des Grandes Alpes</span></a>
+    <a class="brand" href="index.html">Rhein bis Riviera<span>Route des Grandes Alpes</span></a>
     <nav class="site-nav" aria-label="Hauptnavigation">
       <a href="index.html" aria-current="page">Start</a>
-      <a href="etappen.html">Etappen</a>
-      <a href="packliste.html">Packliste</a>
+      <a href="stages.html">Etappen</a>
+      <a href="packing-list.html">Packliste</a>
     </nav>
   </div>
 </header>
-<main id="inhalt">
+<main id="content">
 <section class="hero">
   <div class="hero-inner">
     <div>
       <p class="eyebrow">Bikepacking · 14 Etappen</p>
       <h1>Rhein bis Riviera</h1>
       <p class="hero-route">Karlsruhe → Isolabona</p>
-      <p class="hero-zeit">30. August – 12. September 2026</p>
-      <dl class="kennzahlen"><div><dt>Distanz</dt><dd>1.264,7 km</dd></div><div><dt>Höhenmeter</dt><dd class="wert-auf">+21.846 m</dd></div><div><dt>Pässe</dt><dd>13</dd></div><div><dt>Etappen</dt><dd>14</dd></div></dl>
-      <div class="hero-fortschritt">
-        <div class="fortschritt"><i style="width:88.1%"></i></div>
-        <p class="fortschritt-note">12 von 14 Etappen gefahren · 1.113,7 km von 1.264,7 km · noch 2 Etappen</p>
+      <p class="hero-dates">30. August – 12. September 2026</p>
+      <dl class="stats"><div><dt>Distanz</dt><dd>1.251,4 km</dd></div><div><dt>Höhenmeter</dt><dd class="value-up">+21.187 m</dd></div><div><dt>Pässe</dt><dd>13</dd></div><div><dt>Etappen</dt><dd>14</dd></div></dl>
+      <div class="hero-progress">
+        <div class="progress"><i style="width:93.5%"></i></div>
+        <p class="progress-note">13 von 14 Etappen gefahren · 1.170,1 km von 1.251,4 km · noch 1 Etappe</p>
       </div>
-      <div class="cta-reihe">
-        <a class="knopf" href="tag-12.html">Etappe von heute</a>
-        <a class="knopf sekundaer" href="etappen.html">Alle Etappen</a>
+      <div class="cta-row">
+        <a class="button" href="day-13.html">Etappe von heute</a>
+        <a class="button secondary" href="stages.html">Alle Etappen</a>
       </div>
     </div>
-    <div class="hero-bild leer"><p>Hier kommt das Titelbild hin.<br><span class="mono" style="font-size:12px">data/reise.json → "titelbild"</span></p><div class="tricolore" aria-hidden="true"></div></div>
+    <div class="hero-image empty"><p>Hier kommt das Titelbild hin.<br><span class="mono" style="font-size:12px">data/trip.json → "coverPhoto"</span></p><div class="tricolore" aria-hidden="true"></div></div>
   </div>
 </section>
 
-<section class="abschnitt">
+<section class="section">
   <div class="wrap">
-    <div class="abschnitt-kopf">
+    <div class="section-head">
       <h2>Die Route</h2>
       <p>Auf eine Etappe klicken, um sie im Detail zu sehen.</p>
     </div>
-    <div class="uebersicht-karte" id="uebersichtKarte"></div>
-    <p class="karten-legende">
-      <span class="legende-gefahren"><i></i>gefahren</span>
-      <span class="legende-geplant"><i></i>noch geplant</span>
+    <div class="overview-map" id="overviewMap"></div>
+    <p class="map-legend">
+      <span class="legend-ridden"><i></i>gefahren</span>
+      <span class="legend-planned"><i></i>noch geplant</span>
     </p>
   </div>
 </section>
 
-<section class="abschnitt" style="padding-top:0">
+<section class="section" style="padding-top:0">
   <div class="wrap">
-    <div class="einstiege">
-      <a class="einstieg" href="etappen.html">
+    <div class="entry-cards">
+      <a class="entry-card" href="stages.html">
         <h3>Etappen</h3>
         <p>14 Tage von Karlsruhe nach Isolabona — mit Karte, Höhenprofil, Pässen, Übernachtung und Fotos.</p>
-        <span class="pfeil">Zur Übersicht →</span>
+        <span class="arrow">Zur Übersicht →</span>
       </a>
-      <a class="einstieg" href="packliste.html">
+      <a class="entry-card" href="packing-list.html">
         <h3>Packliste</h3>
         <p>Was mitkam, wie schwer es war und was ich wieder mitnehmen würde.</p>
-        <span class="pfeil">Zur Packliste →</span>
+        <span class="arrow">Zur Packliste →</span>
       </a>
-      <a class="einstieg" href="tag-12.html">
+      <a class="entry-card" href="day-13.html">
         <h3>Heute</h3>
-        <p>Tag 12: Pra Loup → Beuil — 84,4 km, +2.041 m.</p>
-        <span class="pfeil">Zur Etappe →</span>
+        <p>Tag 13: Beuil → Ferme de St Joseph — 67,0 km, +1.904 m.</p>
+        <span class="arrow">Zur Etappe →</span>
       </a>
     </div>
   </div>
 </section>
 
-<section class="abschnitt" style="padding-top:0">
+<section class="section" style="padding-top:0">
   <div class="wrap">
-    <div class="abschnitt-kopf">
+    <div class="section-head">
       <h2>Alle Etappen</h2>
-      <p>Distanzen und Höhenmeter aus den aufgezeichneten bzw. geplanten Tracks.</p>
+      <p>Distanzen und Höhenmeter sind aus den GPX-Dateien der Etappen berechnet.</p>
     </div>
-    <div class="tabelle-wrap">
-      <table class="etappen-tabelle">
+    <div class="table-wrap">
+      <table class="stage-table">
         <thead>
           <tr>
             <th>Tag</th><th>Datum</th><th>Etappe</th>
-            <th class="zahl">Distanz</th><th class="zahl">Aufstieg</th><th>Pässe</th>
+            <th class="num">Distanz</th><th class="num">Aufstieg</th><th>Pässe</th>
           </tr>
         </thead>
-        <tbody><tr class=""><td class="nr">1</td><td class="mono" style="white-space:nowrap">So., 30. Aug.</td><td><a href="tag-01.html">Karlsruhe → Kehl</a> </td><td class="zahl">101,1 km</td><td class="zahl wert-auf">+92 m</td><td class="paesse-zelle">—</td></tr><tr class=""><td class="nr">2</td><td class="mono" style="white-space:nowrap">Mo., 31. Aug.</td><td><a href="tag-02.html">Kehl → Lörrach</a> </td><td class="zahl">140,9 km</td><td class="zahl wert-auf">+196 m</td><td class="paesse-zelle">—</td></tr><tr class=""><td class="nr">3</td><td class="mono" style="white-space:nowrap">Di., 1. Sep.</td><td><a href="tag-03.html">Lörrach → Jura</a> </td><td class="zahl">97,9 km</td><td class="zahl wert-auf">+1.776 m</td><td class="paesse-zelle">Challpass, Sceut</td></tr><tr class=""><td class="nr">4</td><td class="mono" style="white-space:nowrap">Mi., 2. Sep.</td><td><a href="tag-04.html">Jura → Lausanne</a> </td><td class="zahl">115,2 km</td><td class="zahl wert-auf">+1.022 m</td><td class="paesse-zelle">Vue des Alpes (geplant)</td></tr><tr class=""><td class="nr">5</td><td class="mono" style="white-space:nowrap">Do., 3. Sep.</td><td><a href="tag-05.html">Thonon-les-Bains → Cluses</a> </td><td class="zahl">93,0 km</td><td class="zahl wert-auf">+1.992 m</td><td class="paesse-zelle">Col du Feu, Col de Joux-Plane</td></tr><tr class=""><td class="nr">6</td><td class="mono" style="white-space:nowrap">Fr., 4. Sep.</td><td><a href="tag-06.html">Cluses → Beaufort</a> </td><td class="zahl">101,5 km</td><td class="zahl wert-auf">+2.019 m</td><td class="paesse-zelle">Col de Saint-Jean-de-Sixt, Col des Aravis, Col des Saisies</td></tr><tr class=""><td class="nr">7</td><td class="mono" style="white-space:nowrap">Sa., 5. Sep.</td><td><a href="tag-07.html">Beaufort → Séez</a> </td><td class="zahl">42,4 km</td><td class="zahl wert-auf">+1.314 m</td><td class="paesse-zelle">Cormet de Roselend</td></tr><tr class=""><td class="nr">8</td><td class="mono" style="white-space:nowrap">So., 6. Sep.</td><td><a href="tag-08.html">Séez → Camping Orelle</a> </td><td class="zahl">112,5 km</td><td class="zahl wert-auf">+2.144 m</td><td class="paesse-zelle">Col de l&#x27;Iseran</td></tr><tr class=""><td class="nr">9</td><td class="mono" style="white-space:nowrap">Mo., 7. Sep.</td><td><a href="tag-09.html">Saint-Michel-de-Maurienne → Camping 2 Glaciers</a> </td><td class="zahl">63,2 km</td><td class="zahl wert-auf">+2.063 m</td><td class="paesse-zelle">Col du Télégraphe, Col du Galibier</td></tr><tr class=""><td class="nr">10</td><td class="mono" style="white-space:nowrap">Di., 8. Sep.</td><td><a href="tag-10.html">Camping 2 Glaciers → Camping de l&#x27;Izoard</a> </td><td class="zahl">44,1 km</td><td class="zahl wert-auf">+1.220 m</td><td class="paesse-zelle">Col d&#x27;Izoard</td></tr><tr class=""><td class="nr">11</td><td class="mono" style="white-space:nowrap">Mi., 9. Sep.</td><td><a href="tag-11.html">Camping de l’Izoard → Les Pommiers</a> </td><td class="zahl">117,5 km</td><td class="zahl wert-auf">+2.267 m</td><td class="paesse-zelle">Col de Vars</td></tr><tr class="ist-heute"><td class="nr">12</td><td class="mono" style="white-space:nowrap">Do., 10. Sep.</td><td><a href="tag-12.html">Pra Loup → Beuil</a> <span class="status status-heute">heute</span></td><td class="zahl">84,4 km</td><td class="zahl wert-auf">+2.041 m</td><td class="paesse-zelle">Col de la Cayolle, Col de Valberg (geplant)</td></tr><tr class=""><td class="nr">13</td><td class="mono" style="white-space:nowrap">Fr., 11. Sep.</td><td><a href="tag-13.html">Beuil → Ferme de St Joseph</a> <span class="status status-geplant">geplant</span></td><td class="zahl">68,1 km</td><td class="zahl wert-auf">+1.922 m</td><td class="paesse-zelle">Col Saint-Martin (geplant)</td></tr><tr class=""><td class="nr">14</td><td class="mono" style="white-space:nowrap">Sa., 12. Sep.</td><td><a href="tag-14.html">Ferme St Joseph → Isolabona</a> <span class="status status-geplant">geplant</span></td><td class="zahl">82,9 km</td><td class="zahl wert-auf">+1.778 m</td><td class="paesse-zelle">Col de Turini, La Colla (geplant)</td></tr></tbody>
-        <tfoot><tr><td></td><td></td><td>Gesamt</td><td class="zahl">1.264,7 km</td><td class="zahl wert-auf">+21.846 m</td><td></td></tr></tfoot>
+        <tbody><tr class=""><td class="index">1</td><td class="mono" style="white-space:nowrap">So., 30. Aug.</td><td><a href="day-01.html">Karlsruhe → Kehl</a> </td><td class="num">100,5 km</td><td class="num value-up">+55 m</td><td class="passes-cell">—</td></tr><tr class=""><td class="index">2</td><td class="mono" style="white-space:nowrap">Mo., 31. Aug.</td><td><a href="day-02.html">Kehl → Lörrach</a> </td><td class="num">140,2 km</td><td class="num value-up">+169 m</td><td class="passes-cell">—</td></tr><tr class=""><td class="index">3</td><td class="mono" style="white-space:nowrap">Di., 1. Sep.</td><td><a href="day-03.html">Lörrach → Jura</a> </td><td class="num">97,2 km</td><td class="num value-up">+1.681 m</td><td class="passes-cell">Challpass, Sceut</td></tr><tr class=""><td class="index">4</td><td class="mono" style="white-space:nowrap">Mi., 2. Sep.</td><td><a href="day-04.html">Jura → Lausanne</a> </td><td class="num">114,4 km</td><td class="num value-up">+941 m</td><td class="passes-cell">Vue des Alpes (geplant)</td></tr><tr class=""><td class="index">5</td><td class="mono" style="white-space:nowrap">Do., 3. Sep.</td><td><a href="day-05.html">Thonon-les-Bains → Cluses</a> </td><td class="num">92,1 km</td><td class="num value-up">+1.936 m</td><td class="passes-cell">Col du Feu, Col de Joux-Plane</td></tr><tr class=""><td class="index">6</td><td class="mono" style="white-space:nowrap">Fr., 4. Sep.</td><td><a href="day-06.html">Cluses → Beaufort</a> </td><td class="num">100,1 km</td><td class="num value-up">+1.968 m</td><td class="passes-cell">Col de Saint-Jean-de-Sixt, Col des Aravis, Col des Saisies</td></tr><tr class=""><td class="index">7</td><td class="mono" style="white-space:nowrap">Sa., 5. Sep.</td><td><a href="day-07.html">Beaufort → Séez</a> </td><td class="num">41,8 km</td><td class="num value-up">+1.293 m</td><td class="passes-cell">Cormet de Roselend</td></tr><tr class=""><td class="index">8</td><td class="mono" style="white-space:nowrap">So., 6. Sep.</td><td><a href="day-08.html">Séez → Camping Orelle</a> </td><td class="num">111,6 km</td><td class="num value-up">+2.066 m</td><td class="passes-cell">Col de l&#x27;Iseran</td></tr><tr class=""><td class="index">9</td><td class="mono" style="white-space:nowrap">Mo., 7. Sep.</td><td><a href="day-09.html">Saint-Michel-de-Maurienne → Camping 2 Glaciers</a> </td><td class="num">62,4 km</td><td class="num value-up">+2.051 m</td><td class="passes-cell">Col du Télégraphe, Col du Galibier</td></tr><tr class=""><td class="index">10</td><td class="mono" style="white-space:nowrap">Di., 8. Sep.</td><td><a href="day-10.html">Camping 2 Glaciers → Camping de l&#x27;Izoard</a> </td><td class="num">43,5 km</td><td class="num value-up">+1.193 m</td><td class="passes-cell">Col d&#x27;Izoard</td></tr><tr class=""><td class="index">11</td><td class="mono" style="white-space:nowrap">Mi., 9. Sep.</td><td><a href="day-11.html">Camping de l’Izoard → Les Pommiers</a> </td><td class="num">116,1 km</td><td class="num value-up">+2.216 m</td><td class="passes-cell">Col de Vars</td></tr><tr class=""><td class="index">12</td><td class="mono" style="white-space:nowrap">Do., 10. Sep.</td><td><a href="day-12.html">Pra Loup → Beuil</a> </td><td class="num">83,2 km</td><td class="num value-up">+2.006 m</td><td class="passes-cell">Col de la Cayolle, Col de Valberg (geplant)</td></tr><tr class="is-today"><td class="index">13</td><td class="mono" style="white-space:nowrap">Fr., 11. Sep.</td><td><a href="day-13.html">Beuil → Ferme de St Joseph</a> <span class="status status-today">heute</span></td><td class="num">67,0 km</td><td class="num value-up">+1.904 m</td><td class="passes-cell">Col Saint-Martin (geplant)</td></tr><tr class=""><td class="index">14</td><td class="mono" style="white-space:nowrap">Sa., 12. Sep.</td><td><a href="day-14.html">Ferme St Joseph → Isolabona</a> <span class="status status-planned">geplant</span></td><td class="num">81,3 km</td><td class="num value-up">+1.708 m</td><td class="passes-cell">Col de Turini, La Colla (geplant)</td></tr></tbody>
+        <tfoot><tr><td></td><td></td><td>Gesamt</td><td class="num">1.251,4 km</td><td class="num value-up">+21.187 m</td><td></td></tr></tfoot>
       </table>
     </div>
   </div>
@@ -117,14 +117,14 @@
     <p>Kacheln: &copy; <a href="https://opentopomap.org" target="_blank" rel="noopener">OpenTopoMap</a> (CC-BY-SA)
       und <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>,
       Kartendaten &copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>-Mitwirkende.
-      Höhenangaben aus den aufgezeichneten Tracks, daher gerundet.</p>
+      Distanzen und Höhenmeter sind aus den GPX-Dateien berechnet und gerundet.</p>
     <p>Diese Seiten sind statisch erzeugt: <code>python3 tools/build.py</code>.</p>
   </div>
 </footer>
 <script src="assets/vendor/leaflet/leaflet.js"></script>
 <script src="assets/js/format.js"></script>
-<script src="assets/js/karte.js"></script>
-<script>window.RGA_STATUS={"tag-01": "gefahren", "tag-02": "gefahren", "tag-03": "gefahren", "tag-04": "gefahren", "tag-05": "gefahren", "tag-06": "gefahren", "tag-07": "gefahren", "tag-08": "gefahren", "tag-09": "gefahren", "tag-10": "gefahren", "tag-11": "gefahren", "tag-12": "heute", "tag-13": "geplant", "tag-14": "geplant"};window.RGA_NAMEN={"tag-01": "Karlsruhe → Kehl", "tag-02": "Kehl → Lörrach", "tag-03": "Lörrach → Jura", "tag-04": "Jura → Lausanne", "tag-05": "Thonon-les-Bains → Cluses", "tag-06": "Cluses → Beaufort", "tag-07": "Beaufort → Séez", "tag-08": "Séez → Camping Orelle", "tag-09": "Saint-Michel-de-Maurienne → Camping 2 Glaciers", "tag-10": "Camping 2 Glaciers → Camping de l'Izoard", "tag-11": "Camping de l’Izoard → Les Pommiers", "tag-12": "Pra Loup → Beuil", "tag-13": "Beuil → Ferme de St Joseph", "tag-14": "Ferme St Joseph → Isolabona"};</script>
-<script src="assets/js/start.js"></script>
+<script src="assets/js/map.js"></script>
+<script>window.RGA_STATUS={"day-01": "ridden", "day-02": "ridden", "day-03": "ridden", "day-04": "ridden", "day-05": "ridden", "day-06": "ridden", "day-07": "ridden", "day-08": "ridden", "day-09": "ridden", "day-10": "ridden", "day-11": "ridden", "day-12": "ridden", "day-13": "today", "day-14": "planned"};window.RGA_NAMES={"day-01": "Karlsruhe → Kehl", "day-02": "Kehl → Lörrach", "day-03": "Lörrach → Jura", "day-04": "Jura → Lausanne", "day-05": "Thonon-les-Bains → Cluses", "day-06": "Cluses → Beaufort", "day-07": "Beaufort → Séez", "day-08": "Séez → Camping Orelle", "day-09": "Saint-Michel-de-Maurienne → Camping 2 Glaciers", "day-10": "Camping 2 Glaciers → Camping de l'Izoard", "day-11": "Camping de l’Izoard → Les Pommiers", "day-12": "Pra Loup → Beuil", "day-13": "Beuil → Ferme de St Joseph", "day-14": "Ferme St Joseph → Isolabona"};</script>
+<script src="assets/js/home.js"></script>
 </body>
 </html>

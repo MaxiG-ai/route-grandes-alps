@@ -1,0 +1,26 @@
+<section class="wrap section">
+  <p class="eyebrow">{{eyebrow}}</p>
+  <h1>Packliste</h1>
+  <div class="pack-head" style="margin-top:20px">
+    <div>
+      <p>{{intro}}</p>
+      <p style="font-size:13.5px; color:var(--ink-faint)">Die Häkchen sind zum Abpacken gedacht und bleiben nur in diesem Browser gespeichert.</p>
+      <nav class="pack-jump" aria-label="Gruppen">{{jump_links}}</nav>
+    </div>
+    <div class="pack-total">
+      <p class="eyebrow">Gesamtgewicht</p>
+      <p class="weight">{{total}}<small> {{total_unit}}</small></p>
+      <p class="weight-note">{{total_note}}</p>
+      <div class="pack-split">{{split}}</div>
+      <div class="pack-split-legend">{{split_legend}}</div>
+    </div>
+  </div>
+
+  <div class="pack-tools">
+    <span class="pack-progress-text" id="packProgress"></span>
+    <button class="button-sm" id="packReset" type="button">Häkchen zurücksetzen</button>
+  </div>
+  <div class="progress" style="max-width:420px"><i id="packProgressBar" style="width:0"></i></div>
+
+  <div id="packingList" style="margin-top:30px">{{groups}}</div>
+</section>

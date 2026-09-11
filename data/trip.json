@@ -1,0 +1,383 @@
+{
+  "title": "Rhein bis Riviera",
+  "subtitle": "Bikepacking auf der Route des Grandes Alpes",
+  "stravaProfile": "https://www.strava.com/athletes/11965636",
+  "quaeldichProfile": "https://www.quaeldich.de/passjagd/mgRT/",
+  "coverPhoto": null,
+  "stages": [
+    {
+      "id": "day-01",
+      "no": 1,
+      "from": "Karlsruhe",
+      "to": "Kehl",
+      "date": "2026-08-30",
+      "gap": null,
+      "plannedPasses": [],
+      "passes": [],
+      "strava": [
+        {
+          "id": "19963631640",
+          "name": "RGA Tag 1"
+        }
+      ],
+      "lodging": null,
+      "summary": [],
+      "photos": []
+    },
+    {
+      "id": "day-02",
+      "no": 2,
+      "from": "Kehl",
+      "to": "Lörrach",
+      "date": "2026-08-31",
+      "gap": null,
+      "plannedPasses": [],
+      "passes": [],
+      "strava": [
+        {
+          "id": "19977972653",
+          "name": "RGA Tag 2"
+        }
+      ],
+      "lodging": null,
+      "summary": [],
+      "photos": []
+    },
+    {
+      "id": "day-03",
+      "no": 3,
+      "from": "Lörrach",
+      "to": "Jura",
+      "date": "2026-09-01",
+      "gap": "13 km Transfer sind nicht im Track",
+      "plannedPasses": [
+        "Challpass",
+        "Sceut"
+      ],
+      "passes": [
+        {
+          "name": "Challpass",
+          "eleM": 755,
+          "url": "https://www.quaeldich.de/paesse/challpass/",
+          "manual": false
+        },
+        {
+          "name": "Sceut",
+          "eleM": 883,
+          "url": "https://www.quaeldich.de/paesse/sceut-pass/",
+          "manual": false
+        }
+      ],
+      "strava": [
+        {
+          "id": "20001438720",
+          "name": "RGA Tag 3"
+        }
+      ],
+      "lodging": null,
+      "summary": [],
+      "photos": []
+    },
+    {
+      "id": "day-04",
+      "no": 4,
+      "from": "Jura",
+      "to": "Lausanne",
+      "date": "2026-09-02",
+      "gap": null,
+      "plannedPasses": [
+        "Vue des Alpes"
+      ],
+      "passes": [],
+      "strava": [
+        {
+          "id": "20010440902",
+          "name": "RGA Tag 4"
+        }
+      ],
+      "lodging": null,
+      "summary": [],
+      "photos": []
+    },
+    {
+      "id": "day-05",
+      "no": 5,
+      "from": "Thonon-les-Bains",
+      "to": "Cluses",
+      "date": "2026-09-03",
+      "gap": "Fähre über den Genfer See, 13 km",
+      "plannedPasses": [
+        "Col du Feu",
+        "Col du Ranfolly",
+        "Col de Joux Plane"
+      ],
+      "passes": [
+        {
+          "name": "Col du Feu",
+          "eleM": 1117,
+          "url": "https://www.quaeldich.de/paesse/col-du-feu/",
+          "manual": false
+        },
+        {
+          "name": "Col de Joux-Plane",
+          "eleM": 1700,
+          "url": "https://www.quaeldich.de/paesse/col-de-joux-plane/",
+          "manual": false
+        }
+      ],
+      "strava": [
+        {
+          "id": "20021815143",
+          "name": "RGA Tag 5"
+        }
+      ],
+      "lodging": null,
+      "summary": [],
+      "photos": []
+    },
+    {
+      "id": "day-06",
+      "no": 6,
+      "from": "Cluses",
+      "to": "Beaufort",
+      "date": "2026-09-04",
+      "gap": null,
+      "plannedPasses": [
+        "Col de St-Jean-de-Sixt",
+        "Col des Aravis",
+        "Col des Saisies"
+      ],
+      "passes": [
+        {
+          "name": "Col de Saint-Jean-de-Sixt",
+          "eleM": 956,
+          "url": "https://www.quaeldich.de/paesse/col-de-saint-jean-de-sixt/",
+          "manual": false
+        },
+        {
+          "name": "Col des Aravis",
+          "eleM": 1486,
+          "url": "https://www.quaeldich.de/paesse/col-des-aravis/",
+          "manual": false
+        },
+        {
+          "name": "Col des Saisies",
+          "eleM": 1650,
+          "url": "https://www.quaeldich.de/paesse/col-des-saisies/",
+          "manual": false
+        }
+      ],
+      "strava": [
+        {
+          "id": "20036129337",
+          "name": "RGA Tag 6"
+        }
+      ],
+      "lodging": null,
+      "summary": [],
+      "photos": []
+    },
+    {
+      "id": "day-07",
+      "no": 7,
+      "from": "Beaufort",
+      "to": "Séez",
+      "date": "2026-09-05",
+      "gap": null,
+      "plannedPasses": [
+        "Cormet de Roselend"
+      ],
+      "passes": [
+        {
+          "name": "Cormet de Roselend",
+          "eleM": 1968,
+          "url": "https://www.quaeldich.de/paesse/cormet-de-roselend/",
+          "manual": true
+        }
+      ],
+      "strava": [
+        {
+          "id": "20050645323",
+          "name": "RGA Tag 7, part 1"
+        },
+        {
+          "id": "20050651657",
+          "name": "RGA Tag 7, part 2"
+        }
+      ],
+      "lodging": null,
+      "summary": [],
+      "photos": []
+    },
+    {
+      "id": "day-08",
+      "no": 8,
+      "from": "Séez",
+      "to": "Camping Orelle",
+      "date": "2026-09-06",
+      "gap": null,
+      "plannedPasses": [
+        "Col de l'Iseran"
+      ],
+      "passes": [
+        {
+          "name": "Col de l'Iseran",
+          "eleM": 2764,
+          "url": "https://www.quaeldich.de/paesse/col-de-l-iseran/",
+          "manual": false
+        }
+      ],
+      "strava": [
+        {
+          "id": "20065758174",
+          "name": "RGA Tag 8"
+        }
+      ],
+      "lodging": null,
+      "summary": [],
+      "photos": []
+    },
+    {
+      "id": "day-09",
+      "no": 9,
+      "from": "Saint-Michel-de-Maurienne",
+      "to": "Camping 2 Glaciers",
+      "date": "2026-09-07",
+      "gap": null,
+      "plannedPasses": [
+        "Col du Télégraphe",
+        "Col du Galibier"
+      ],
+      "passes": [
+        {
+          "name": "Col du Télégraphe",
+          "eleM": 1566,
+          "url": "https://www.quaeldich.de/paesse/col-du-telegraphe/",
+          "manual": false
+        },
+        {
+          "name": "Col du Galibier",
+          "eleM": 2645,
+          "url": "https://www.quaeldich.de/paesse/col-du-galibier/",
+          "manual": false
+        }
+      ],
+      "strava": [
+        {
+          "id": "20074706725",
+          "name": "RGA Tag 9"
+        }
+      ],
+      "lodging": null,
+      "summary": [],
+      "photos": []
+    },
+    {
+      "id": "day-10",
+      "no": 10,
+      "from": "Camping 2 Glaciers",
+      "to": "Camping de l'Izoard",
+      "date": "2026-09-08",
+      "gap": null,
+      "plannedPasses": [
+        "Col d'Izoard"
+      ],
+      "passes": [
+        {
+          "name": "Col d'Izoard",
+          "eleM": 2360,
+          "url": "https://www.quaeldich.de/paesse/col-d-izoard/",
+          "manual": false
+        }
+      ],
+      "strava": [
+        {
+          "id": "20087973821",
+          "name": "RGA Tag 10"
+        }
+      ],
+      "lodging": null,
+      "summary": [],
+      "photos": []
+    },
+    {
+      "id": "day-11",
+      "no": 11,
+      "from": "Camping de l’Izoard",
+      "to": "Les Pommiers",
+      "date": "2026-09-09",
+      "gap": null,
+      "plannedPasses": [
+        "Col de Vars",
+        "Col d'Allos"
+      ],
+      "passes": [
+        {
+          "name": "Col de Vars",
+          "eleM": 2109,
+          "url": null,
+          "manual": false
+        }
+      ],
+      "strava": [
+        {
+          "id": "20112881484",
+          "name": "RGA Tag 11"
+        }
+      ],
+      "lodging": null,
+      "summary": [],
+      "photos": []
+    },
+    {
+      "id": "day-12",
+      "no": 12,
+      "from": "Pra Loup",
+      "to": "Beuil",
+      "date": "2026-09-10",
+      "gap": "Nach Regen umgeplant: Tag 11 endete in Pra Loup, 20 km vor Les Pommiers",
+      "plannedPasses": [
+        "Col de la Cayolle",
+        "Col de Valberg"
+      ],
+      "passes": [],
+      "strava": [],
+      "lodging": null,
+      "summary": [],
+      "photos": []
+    },
+    {
+      "id": "day-13",
+      "no": 13,
+      "from": "Beuil",
+      "to": "Ferme de St Joseph",
+      "date": "2026-09-11",
+      "gap": null,
+      "plannedPasses": [
+        "Col Saint-Martin"
+      ],
+      "passes": [],
+      "strava": [],
+      "lodging": null,
+      "summary": [],
+      "photos": []
+    },
+    {
+      "id": "day-14",
+      "no": 14,
+      "from": "Ferme St Joseph",
+      "to": "Isolabona",
+      "date": "2026-09-12",
+      "gap": null,
+      "plannedPasses": [
+        "Col de Turini",
+        "La Colla"
+      ],
+      "passes": [],
+      "strava": [],
+      "lodging": null,
+      "summary": [],
+      "photos": []
+    }
+  ]
+}

@@ -2,75 +2,75 @@
   <div class="hero-inner">
     <div>
       <p class="eyebrow">{{eyebrow}}</p>
-      <h1>{{titel}}</h1>
+      <h1>{{title}}</h1>
       <p class="hero-route">{{route}}</p>
-      <p class="hero-zeit">{{zeitraum}}</p>
-      <dl class="kennzahlen">{{kennzahlen}}</dl>
-      <div class="hero-fortschritt">
-        <div class="fortschritt"><i style="width:{{fortschritt}}%"></i></div>
-        <p class="fortschritt-note">{{fortschritt_text}}</p>
+      <p class="hero-dates">{{dates}}</p>
+      <dl class="stats">{{stats}}</dl>
+      <div class="hero-progress">
+        <div class="progress"><i style="width:{{progress}}%"></i></div>
+        <p class="progress-note">{{progress_note}}</p>
       </div>
-      <div class="cta-reihe">
-        <a class="knopf" href="{{cta_ziel}}">{{cta_text}}</a>
-        <a class="knopf sekundaer" href="etappen.html">Alle Etappen</a>
+      <div class="cta-row">
+        <a class="button" href="{{cta_href}}">{{cta_text}}</a>
+        <a class="button secondary" href="stages.html">Alle Etappen</a>
       </div>
     </div>
-    {{titelbild}}
+    {{cover}}
   </div>
 </section>
 
-<section class="abschnitt">
+<section class="section">
   <div class="wrap">
-    <div class="abschnitt-kopf">
+    <div class="section-head">
       <h2>Die Route</h2>
       <p>Auf eine Etappe klicken, um sie im Detail zu sehen.</p>
     </div>
-    <div class="uebersicht-karte" id="uebersichtKarte"></div>
-    <p class="karten-legende">
-      <span class="legende-gefahren"><i></i>gefahren</span>
-      <span class="legende-geplant"><i></i>noch geplant</span>
+    <div class="overview-map" id="overviewMap"></div>
+    <p class="map-legend">
+      <span class="legend-ridden"><i></i>gefahren</span>
+      <span class="legend-planned"><i></i>noch geplant</span>
     </p>
   </div>
 </section>
 
-<section class="abschnitt" style="padding-top:0">
+<section class="section" style="padding-top:0">
   <div class="wrap">
-    <div class="einstiege">
-      <a class="einstieg" href="etappen.html">
+    <div class="entry-cards">
+      <a class="entry-card" href="stages.html">
         <h3>Etappen</h3>
-        <p>{{anzahl_etappen}} Tage von {{start_ort}} nach {{ziel_ort}} — mit Karte, Höhenprofil, Pässen, Übernachtung und Fotos.</p>
-        <span class="pfeil">Zur Übersicht →</span>
+        <p>{{stage_count}} Tage von {{start_place}} nach {{end_place}} — mit Karte, Höhenprofil, Pässen, Übernachtung und Fotos.</p>
+        <span class="arrow">Zur Übersicht →</span>
       </a>
-      <a class="einstieg" href="packliste.html">
+      <a class="entry-card" href="packing-list.html">
         <h3>Packliste</h3>
         <p>Was mitkam, wie schwer es war und was ich wieder mitnehmen würde.</p>
-        <span class="pfeil">Zur Packliste →</span>
+        <span class="arrow">Zur Packliste →</span>
       </a>
-      <a class="einstieg" href="{{cta_ziel}}">
-        <h3>{{einstieg3_titel}}</h3>
-        <p>{{einstieg3_text}}</p>
-        <span class="pfeil">Zur Etappe →</span>
+      <a class="entry-card" href="{{cta_href}}">
+        <h3>{{third_card_title}}</h3>
+        <p>{{third_card_text}}</p>
+        <span class="arrow">Zur Etappe →</span>
       </a>
     </div>
   </div>
 </section>
 
-<section class="abschnitt" style="padding-top:0">
+<section class="section" style="padding-top:0">
   <div class="wrap">
-    <div class="abschnitt-kopf">
+    <div class="section-head">
       <h2>Alle Etappen</h2>
-      <p>{{tabelle_note}}</p>
+      <p>{{table_note}}</p>
     </div>
-    <div class="tabelle-wrap">
-      <table class="etappen-tabelle">
+    <div class="table-wrap">
+      <table class="stage-table">
         <thead>
           <tr>
             <th>Tag</th><th>Datum</th><th>Etappe</th>
-            <th class="zahl">Distanz</th><th class="zahl">Aufstieg</th><th>Pässe</th>
+            <th class="num">Distanz</th><th class="num">Aufstieg</th><th>Pässe</th>
           </tr>
         </thead>
-        <tbody>{{tabelle}}</tbody>
-        <tfoot>{{tabelle_summe}}</tfoot>
+        <tbody>{{rows}}</tbody>
+        <tfoot>{{total_row}}</tfoot>
       </table>
     </div>
   </div>

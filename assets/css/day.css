@@ -1,0 +1,173 @@
+/* ==========================================================================
+   day.css -- a single stage page: header, map, elevation profile, lodging,
+              summary, photo grid, lightbox
+   ========================================================================== */
+
+/* --- stage header -------------------------------------------------------- */
+.day-head{ padding-block:clamp(24px,3.6vw,40px) 20px; }
+.day-head-meta{ display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:10px; }
+.day-head-meta .index{ font-size:11px; font-weight:700; letter-spacing:.11em; text-transform:uppercase; color:var(--blue); }
+.day-head-meta .date{ font-family:var(--mono); font-size:12.5px; color:var(--ink-faint); }
+.day-head h1{ font-size:clamp(25px,3.6vw,38px); }
+.day-head h1 .arrow{ color:var(--ink-faint); font-weight:400; }
+.day-head .stats{ margin-top:18px; }
+.day-gap{
+  display:flex; gap:9px; margin:16px 0 0; padding:9px 13px; font-size:13px;
+  background:var(--red-pale); border-left:3px solid var(--red);
+  border-radius:0 var(--radius-sm) var(--radius-sm) 0;
+  color:var(--ink-soft); max-width:var(--measure);
+}
+.day-gap b{ color:var(--red-deep); font-weight:600; }
+
+/* --- bar above the map --------------------------------------------------- */
+.day-bar{
+  display:flex; align-items:center; gap:12px 26px; flex-wrap:wrap;
+  max-width:var(--column); margin-inline:auto; padding:11px 20px;
+}
+.day-bar-group{ display:flex; align-items:center; gap:9px; min-width:0; }
+.day-bar-label{ font-size:10px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-faint); white-space:nowrap; }
+.day-bar-group.right{ margin-left:auto; }
+.layer-toggle{ display:flex; gap:3px; background:var(--paper); padding:3px; border-radius:9px; border:1px solid var(--line); }
+.layer-toggle button{ border:0; background:transparent; font-size:12px; padding:5px 11px; border-radius:6px; cursor:pointer; color:var(--ink-soft); }
+.layer-toggle button:hover{ color:var(--ink); }
+.layer-toggle button.active{ background:var(--blue); color:var(--on-blue); font-weight:600; }
+
+/* --- map and elevation profile ------------------------------------------- */
+.day-map-block{ background:var(--paper); border-block:1px solid var(--line); }
+.day-map-block .map-and-profile{ max-width:var(--column); margin-inline:auto; padding:0 20px 20px; }
+.day-map{
+  height:min(58vh,520px); min-height:320px; border:1px solid var(--line);
+  border-radius:var(--radius) var(--radius) 0 0; overflow:hidden; background:var(--paper-deep);
+}
+.leaflet-container{ font-family:var(--sans); background:var(--paper-deep); }
+.rr-popup{ font-family:var(--sans); font-size:13px; line-height:1.4; }
+.rr-popup b{ display:block; font-family:var(--serif); font-size:14px; }
+
+.profile-block{
+  position:relative; height:148px; border:1px solid var(--line); border-top:0;
+  border-radius:0 0 var(--radius) var(--radius); background:var(--white); overflow:hidden;
+}
+#profileSvg{ width:100%; height:100%; display:block; }
+.profile-tip{
+  position:absolute; top:8px; background:var(--ink); color:var(--white);
+  font-family:var(--mono); font-size:11.5px; padding:4px 8px; border-radius:6px;
+  transform:translateX(-50%); pointer-events:none; opacity:0; transition:opacity .1s ease; white-space:nowrap;
+}
+.profile-tip.show{ opacity:1; }
+.profile-hint{ margin:8px 0 0; font-size:11.5px; color:var(--ink-faint); }
+
+/* markers drawn by map.js, plus the fallback if a track is missing */
+.bed-pin{ display:grid; place-items:center; }
+.bed-pin span{
+  display:grid; place-items:center; width:26px; height:26px; border-radius:50%;
+  background:var(--blue); color:#fff; font-size:14px; border:2px solid #fff;
+  box-shadow:0 1px 4px rgba(17,24,39,.4);
+}
+.map-error{
+  margin:0; padding:22px; font-size:13.5px; color:var(--ink-soft);
+  display:grid; place-items:center; height:100%; text-align:center;
+}
+.map-error code{ font-family:var(--mono); font-size:12.5px; }
+
+/* --- stage body ---------------------------------------------------------- */
+.day-body{ padding-block:clamp(30px,4.4vw,50px); display:grid; gap:clamp(30px,4.4vw,50px); }
+.day-section > h2{ display:flex; align-items:center; gap:12px; margin-bottom:16px; }
+.day-section > h2::after{ content:""; flex:1 1 auto; height:2px; background:var(--line); }
+
+/* lodging */
+.lodging{ display:grid; gap:10px; max-width:780px; }
+.lodging-card{
+  background:var(--paper); border:1px solid var(--line); border-left:3px solid var(--blue);
+  border-radius:0 var(--radius) var(--radius) 0; padding:18px 20px;
+}
+.lodging-head{ display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; }
+.lodging-head h3{ margin:0; }
+.lodging-head h3 a{ text-decoration:none; }
+.lodging-head h3 a:hover{ text-decoration:underline; }
+.type-badge{
+  font-size:10.5px; font-weight:700; letter-spacing:.06em; text-transform:uppercase;
+  padding:2px 8px; border-radius:999px; background:var(--blue-pale); color:var(--blue-deep);
+}
+.lodging-place{ margin:5px 0 0; font-size:13.5px; color:var(--ink-soft); }
+.lodging-note{ margin:12px 0 0; font-size:14px; color:var(--ink); max-width:var(--measure); }
+.lodging-figures{ display:flex; gap:22px; flex-wrap:wrap; margin-top:14px; padding-top:13px; border-top:1px solid var(--line); }
+.lodging-hint{ margin:0; font-size:12.5px; color:var(--ink-faint); }
+.stars{ font-size:17px; letter-spacing:1.5px; color:var(--red); line-height:1.1; }
+.stars .off{ color:var(--line-strong); }
+
+/* summary */
+.summary{ max-width:var(--measure); font-size:16.5px; line-height:1.68; }
+.summary p:first-of-type::first-letter{
+  font-family:var(--serif); font-size:2.4em; line-height:.9; font-weight:600;
+  float:left; padding:.02em .08em 0 0; color:var(--blue);
+}
+.summary p:last-child{ margin-bottom:0; }
+
+/* photos */
+.photo-grid{
+  display:grid; grid-template-columns:repeat(auto-fill,minmax(190px,1fr));
+  gap:10px; margin:0; padding:0; list-style:none;
+}
+.photo-grid button{
+  display:block; width:100%; padding:0; border:1px solid var(--line); background:var(--paper-deep);
+  border-radius:var(--radius-sm); overflow:hidden; cursor:zoom-in; aspect-ratio:3/2;
+}
+.photo-grid button:hover{ border-color:var(--blue); }
+.photo-grid img{ width:100%; height:100%; object-fit:cover; transition:transform .25s ease; }
+.photo-grid button:hover img{ transform:scale(1.035); }
+.photo-count{ font-family:var(--mono); font-size:12.5px; color:var(--ink-faint); }
+
+/* lightbox -- above Leaflet's controls, which sit at z-index 1000 */
+.lightbox{
+  position:fixed; inset:0; z-index:2000; display:none;
+  background:rgba(10,16,28,.94); padding:clamp(12px,3vw,40px);
+}
+.lightbox.open{ display:grid; grid-template-rows:1fr auto; gap:14px; }
+.lightbox-image{ display:flex; align-items:center; justify-content:center; min-height:0; overflow:hidden; }
+.lightbox-image img{ max-width:100%; max-height:100%; width:auto; height:auto; border-radius:6px; object-fit:contain; }
+.lightbox-bar{ display:flex; align-items:center; gap:16px; flex-wrap:wrap; color:#fff; }
+.lightbox-caption{ font-size:14px; line-height:1.4; max-width:70ch; }
+.lightbox-counter{ font-family:var(--mono); font-size:12.5px; opacity:.7; margin-left:auto; }
+.lightbox button{
+  border:1px solid rgba(255,255,255,.35); background:rgba(255,255,255,.08); color:#fff;
+  width:38px; height:38px; border-radius:50%; cursor:pointer; font-size:17px; line-height:1;
+  display:grid; place-items:center; flex:0 0 auto;
+}
+.lightbox button:hover{ background:rgba(255,255,255,.2); }
+.lightbox .close{ position:absolute; top:clamp(12px,3vw,28px); right:clamp(12px,3vw,28px); }
+
+/* --- previous / next and the strip of all stages ------------------------- */
+.day-nav{ display:flex; gap:12px; justify-content:space-between; padding-block:8px 30px; }
+.day-nav a{
+  display:flex; flex-direction:column; gap:2px; max-width:46%;
+  text-decoration:none; color:inherit; border:1px solid var(--line);
+  border-radius:var(--radius); padding:11px 16px; background:var(--white);
+}
+.day-nav a:hover{ border-color:var(--blue); }
+.day-nav a.next{ margin-left:auto; text-align:right; }
+.day-nav .direction{ font-size:10.5px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:var(--ink-faint); }
+.day-nav .target{ font-family:var(--serif); font-size:15px; font-weight:600; }
+
+.all-stages{ background:var(--paper); border-top:1px solid var(--line); }
+.all-stages .wrap{ padding-block:26px 34px; }
+.all-stages h2{ font-size:19px; margin-bottom:14px; }
+.stage-strip{ display:flex; gap:8px; flex-wrap:wrap; }
+.stage-strip a{
+  display:flex; flex-direction:column; gap:1px; min-width:118px; flex:1 1 118px;
+  text-decoration:none; color:inherit; background:var(--white);
+  border:1px solid var(--line); border-top:3px solid var(--blue);
+  border-radius:0 0 var(--radius-sm) var(--radius-sm); padding:9px 11px;
+}
+.stage-strip a:hover{ border-color:var(--blue); }
+.stage-strip a.is-today{ border-top-color:var(--red); }
+.stage-strip a.is-planned{ border-top-color:var(--line-strong); }
+.stage-strip a[aria-current="page"]{ background:var(--blue-pale); border-color:var(--blue); }
+.stage-strip .index{ font-size:10px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-faint); }
+.stage-strip .place{ font-size:12.5px; font-weight:600; line-height:1.25; }
+.stage-strip .km{ font-family:var(--mono); font-size:11px; color:var(--ink-faint); }
+
+@media (max-width:860px){
+  .day-map{ height:min(50vh,400px); }
+  .summary{ font-size:15.5px; }
+  .day-nav a{ max-width:48%; }
+}

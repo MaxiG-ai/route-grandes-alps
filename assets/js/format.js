@@ -1,30 +1,35 @@
-/* format.js -- deutsche Zahlen- und Datumsformate, Reisestatus.
-   Wird von allen Seiten geladen; legt window.RGA an. */
+/* format.js -- German number and date formats. Loaded by every page and
+   sets up window.RGA. The site is German, the code is not. */
 window.RGA = window.RGA || {};
 
 RGA.fmt = (function(){
-  const WOCHENTAG = ['So.','Mo.','Di.','Mi.','Do.','Fr.','Sa.'];
-  const MONAT = ['Jan.','Feb.','März','Apr.','Mai','Juni','Juli','Aug.','Sep.','Okt.','Nov.','Dez.'];
+  const WEEKDAY = ['So.','Mo.','Di.','Mi.','Do.','Fr.','Sa.'];
+  const MONTH = ['Jan.','Feb.','März','Apr.','Mai','Juni','Juli','Aug.','Sep.','Okt.','Nov.','Dez.'];
 
-  function zahl(n){ return Math.round(n).toLocaleString('de-DE'); }
-  function km(v){ return v.toLocaleString('de-DE', {minimumFractionDigits:1, maximumFractionDigits:1}) + ' km'; }
-  function meter(n, vorzeichen){
-    const z = zahl(Math.abs(n)) + ' m';
-    if(vorzeichen === '+') return '+' + z;
-    if(vorzeichen === '-') return '−' + z;   /* echtes Minuszeichen */
-    return z;
+  function number(n){ return Math.round(n).toLocaleString('de-DE'); }
+
+  function km(value){
+    return value.toLocaleString('de-DE', {minimumFractionDigits:1, maximumFractionDigits:1}) + ' km';
   }
-  function gramm(g){
-    if(g >= 1000) return (g/1000).toLocaleString('de-DE', {minimumFractionDigits:2, maximumFractionDigits:2}) + ' kg';
-    return zahl(g) + ' g';
+
+  function metres(n, sign){
+    const text = number(Math.abs(n)) + ' m';
+    if(sign === '+') return '+' + text;
+    if(sign === '-') return '−' + text;   /* real minus sign, not a hyphen */
+    return text;
   }
-  function datumTeile(iso){
+
+  function grams(g){
+    if(g >= 1000){
+      return (g / 1000).toLocaleString('de-DE', {minimumFractionDigits:2, maximumFractionDigits:2}) + ' kg';
+    }
+    return number(g) + ' g';
+  }
+
+  function shortDate(iso){
     const d = new Date(iso + 'T12:00:00');
-    return { wt: WOCHENTAG[d.getDay()], tag: d.getDate(), monat: MONAT[d.getMonth()], jahr: d.getFullYear() };
+    return `${WEEKDAY[d.getDay()]}, ${d.getDate()}. ${MONTH[d.getMonth()]}`;
   }
-  function datumKurz(iso){
-    const t = datumTeile(iso);
-    return `${t.wt}, ${t.tag}. ${t.monat}`;
-  }
-  return { zahl, km, meter, gramm, datumKurz, datumTeile };
+
+  return { number, km, metres, grams, shortDate };
 })();

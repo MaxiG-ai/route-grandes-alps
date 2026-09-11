@@ -1,16 +1,27 @@
 #!/usr/bin/env python3
-"""Erzeugt alle HTML-Seiten aus templates/ und data/.
+"""Builds the whole site from gpx/ and data/.
 
-    python3 tools/build.py            # Seiten schreiben
-    python3 tools/build.py --check    # nur prüfen, ob die Dateien aktuell sind
+    python3 tools/build.py                    write everything
+    python3 tools/build.py --check            only report what is out of date
+    python3 tools/build.py --today 2026-09-05 pin the ridden/today/planned date
+    python3 tools/build.py --smoothing 0      no elevation smoothing
 
-Geschrieben werden index.html, etappen.html, packliste.html und
-tag-01.html … tag-14.html. Inhalte, Zahlen, Pass-Chips, Übernachtung,
-Zusammenfassung und Fotoraster stehen danach fest im HTML -- JavaScript
-übernimmt nur Karte, Höhenprofil, Lightbox und die Packlisten-Häkchen.
+Inputs
+    gpx/day-NN.gpx           one track per stage, the source for every number
+    data/trip.json           hand-written stage content
+    data/packing-list.json   the packing list
 
-Der Reisestatus (gefahren / heute / geplant) wird beim Bauen gegen das
-heutige Datum bestimmt. Also: vor dem Hochladen neu bauen.
+Outputs
+    index.html, stages.html, packing-list.html, day-NN.html
+    data/tracks/day-NN.json  thinned geometry, fetched when a stage opens
+    data/overview.json       all stages, thinned further, for the landing map
+
+Text, figures, pass chips, lodging, summaries and photo grids end up in the
+HTML, so JavaScript only drives the map, the profile, the lightbox and the
+packing-list checkboxes.
+
+The ridden/today/planned state is worked out at build time, so rebuild
+before uploading.
 """
 import argparse
 import html
@@ -19,652 +30,704 @@ import sys
 from datetime import date
 from pathlib import Path
 
+import gpx
+
 ROOT = Path(__file__).resolve().parent.parent
 TEMPLATES = ROOT / "templates"
 DATA = ROOT / "data"
+GPX_DIR = ROOT / "gpx"
 
-WOCHENTAG = ["Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag"]
-WOCHENTAG_KURZ = ["Mo.", "Di.", "Mi.", "Do.", "Fr.", "Sa.", "So."]
-MONAT = ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli",
+WEEKDAY = ["Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag"]
+WEEKDAY_SHORT = ["Mo.", "Di.", "Mi.", "Do.", "Fr.", "Sa.", "So."]
+MONTH = ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli",
          "August", "September", "Oktober", "November", "Dezember"]
-MONAT_KURZ = ["Jan.", "Feb.", "März", "Apr.", "Mai", "Juni", "Juli",
-              "Aug.", "Sep.", "Okt.", "Nov.", "Dez."]
+MONTH_SHORT = ["Jan.", "Feb.", "März", "Apr.", "Mai", "Juni", "Juli",
+               "Aug.", "Sep.", "Okt.", "Nov.", "Dez."]
 
-# Farben der Packlisten-Gruppen: von Bleu über neutrale Töne nach Rouge.
-GRUPPEN_FARBEN = ["#003d78", "#0055a4", "#3d7dc0", "#7aa6d6", "#a8b6c8",
-                  "#c8102e", "#ef4135", "#f2887f", "#5c6a80"]
+# Packing-list group colours: from blue through neutral tones to red.
+GROUP_COLOURS = ["#003d78", "#0055a4", "#3d7dc0", "#7aa6d6", "#a8b6c8",
+                 "#c8102e", "#ef4135", "#f2887f", "#5c6a80"]
+
+STATUS_LABEL = {"ridden": "gefahren", "today": "heute", "planned": "geplant"}
 
 
-# --- Formate ---------------------------------------------------------------
+# --- German formats --------------------------------------------------------
 
-def zahl(n):
+def number(n):
     return f"{round(n):,}".replace(",", ".")
 
 
-def km(v):
-    ganz, komma = f"{v:.1f}".split(".")
-    return f"{int(ganz):,}".replace(",", ".") + "," + komma + " km"
+def km(value):
+    whole, fraction = f"{value:.1f}".split(".")
+    return f"{int(whole):,}".replace(",", ".") + "," + fraction + " km"
 
 
-def meter(n, vorzeichen=""):
-    z = zahl(abs(n)) + " m"
-    return {"+": "+", "-": "−"}.get(vorzeichen, "") + z
+def metres(n, sign=""):
+    text = number(abs(n)) + " m"
+    return {"+": "+", "-": "−"}.get(sign, "") + text
 
 
-def gramm(g):
+def grams(g):
     if g >= 1000:
         return f"{g / 1000:.2f}".replace(".", ",") + " kg"
-    return zahl(g) + " g"
+    return number(g) + " g"
 
 
-def tag_datum(iso):
+def short_date(iso):
     d = date.fromisoformat(iso)
-    return d
+    return f"{WEEKDAY_SHORT[d.weekday()]}, {d.day}. {MONTH_SHORT[d.month - 1]}"
 
 
-def datum_kurz(iso):
-    d = tag_datum(iso)
-    return f"{WOCHENTAG_KURZ[d.weekday()]}, {d.day}. {MONAT_KURZ[d.month - 1]}"
+def long_date(iso):
+    d = date.fromisoformat(iso)
+    return f"{WEEKDAY[d.weekday()]}, {d.day}. {MONTH[d.month - 1]} {d.year}"
 
 
-def datum_lang(iso):
-    d = tag_datum(iso)
-    return f"{WOCHENTAG[d.weekday()]}, {d.day}. {MONAT[d.month - 1]} {d.year}"
-
-
-def zeitraum(von, bis):
-    a, b = tag_datum(von), tag_datum(bis)
+def date_range(first, last):
+    a, b = date.fromisoformat(first), date.fromisoformat(last)
     if a.year == b.year:
         if a.month == b.month:
-            return f"{a.day}.–{b.day}. {MONAT[b.month - 1]} {b.year}"
-        return f"{a.day}. {MONAT[a.month - 1]} – {b.day}. {MONAT[b.month - 1]} {b.year}"
-    return f"{a.day}. {MONAT[a.month - 1]} {a.year} – {b.day}. {MONAT[b.month - 1]} {b.year}"
+            return f"{a.day}.–{b.day}. {MONTH[b.month - 1]} {b.year}"
+        return f"{a.day}. {MONTH[a.month - 1]} – {b.day}. {MONTH[b.month - 1]} {b.year}"
+    return f"{a.day}. {MONTH[a.month - 1]} {a.year} – {b.day}. {MONTH[b.month - 1]} {b.year}"
 
 
 def e(text):
-    """HTML-escapen; None wird zu leerem String."""
+    """Escape for HTML; None becomes an empty string."""
     return html.escape(str(text), quote=True) if text is not None else ""
 
 
-# --- Status ----------------------------------------------------------------
-
-STATUS_LABEL = {"gefahren": "gefahren", "heute": "heute", "geplant": "geplant"}
-
-
-def status_von(iso, heute):
-    d = tag_datum(iso)
-    if d < heute:
-        return "gefahren"
-    return "heute" if d == heute else "geplant"
+def status_of(iso, today):
+    d = date.fromisoformat(iso)
+    if d < today:
+        return "ridden"
+    return "today" if d == today else "planned"
 
 
 def status_badge(status):
     return f'<span class="status status-{status}">{STATUS_LABEL[status]}</span>'
 
 
-# --- Bausteine -------------------------------------------------------------
+# --- small HTML pieces -----------------------------------------------------
 
-def kennzahl(label, wert, klasse=""):
-    k = f' class="{klasse}"' if klasse else ""
-    return f"<div><dt>{e(label)}</dt><dd{k}>{wert}</dd></div>"
+def stat(label, value, css_class=""):
+    attr = f' class="{css_class}"' if css_class else ""
+    return f"<div><dt>{e(label)}</dt><dd{attr}>{value}</dd></div>"
 
 
-def pass_chips(paesse):
-    if not paesse:
-        return ""
-    teile = []
-    for p in paesse:
-        inner = f'<b>{e(p["name"])}</b><span class="hoehe">{zahl(p["hoehe"])} m</span>'
-        klassen = "pass-chip" + (" manuell" if p.get("manuell") else "")
+def pass_chips(passes):
+    chips = []
+    for p in passes:
+        inner = f'<b>{e(p["name"])}</b><span class="ele">{number(p["eleM"])} m</span>'
+        classes = "pass-chip" + (" manual" if p.get("manual") else "")
         if p.get("url"):
-            titel = ' title="Von Hand ergänzt — die Strava-Aufzeichnung war mitten am Berg geteilt."' if p.get("manuell") else ""
-            teile.append(f'<a class="{klassen}" href="{e(p["url"])}" target="_blank" rel="noopener"{titel}>{inner}</a>')
+            title = (' title="Von Hand ergänzt — die Strava-Aufzeichnung war mitten am Berg geteilt."'
+                     if p.get("manual") else "")
+            chips.append(f'<a class="{classes}" href="{e(p["url"])}" target="_blank"'
+                         f' rel="noopener"{title}>{inner}</a>')
         else:
-            teile.append(f'<span class="pass-chip ohne-link" title="Noch keine quäldich-Seite verlinkt">{inner}</span>')
-    return "".join(teile)
+            chips.append(f'<span class="pass-chip nolink"'
+                         f' title="Noch keine quäldich-Seite verlinkt">{inner}</span>')
+    return "".join(chips)
 
 
-def strava_chips(etappe, status):
-    if etappe["strava"]:
+def strava_chips(stage):
+    if stage["strava"]:
         return " ".join(
             f'<a class="strava" href="https://www.strava.com/activities/{e(a["id"])}"'
             f' target="_blank" rel="noopener">{e(a["name"])}</a>'
-            for a in etappe["strava"]
+            for a in stage["strava"]
         )
-    text = "Noch nicht gefahren" if status == "geplant" else "Keine Aufzeichnung"
-    return f'<span class="strava stumm">{text}</span>'
+    text = "Noch nicht gefahren" if stage["status"] == "planned" else "Keine Aufzeichnung"
+    return f'<span class="strava muted">{text}</span>'
 
 
-def sparkline(profil, breite=260, hoehe=34, rand=3):
-    lo, hi = min(profil), max(profil)
-    spanne = max(1, hi - lo)
-    punkte = []
-    for i, wert in enumerate(profil):
-        x = rand + (i / (len(profil) - 1)) * (breite - rand * 2)
-        y = hoehe - rand - ((wert - lo) / spanne) * (hoehe - rand * 2)
-        punkte.append(f"{x:.1f} {y:.1f}")
-    linie = "M" + " L".join(punkte)
-    flaeche = f"{linie} L{breite - rand:.1f} {hoehe} L{rand:.1f} {hoehe} Z"
-    return (f'<svg class="sparkline" viewBox="0 0 {breite} {hoehe}" preserveAspectRatio="none" aria-hidden="true">'
-            f'<path class="flaeche" d="{flaeche}"/><path class="linie" d="{linie}"/></svg>')
+def sparkline(profile, width=260, height=34, pad=3):
+    low, high = min(profile), max(profile)
+    span = max(1, high - low)
+    points = []
+    for i, value in enumerate(profile):
+        x = pad + (i / (len(profile) - 1)) * (width - pad * 2)
+        y = height - pad - ((value - low) / span) * (height - pad * 2)
+        points.append(f"{x:.1f} {y:.1f}")
+    line = "M" + " L".join(points)
+    area = f"{line} L{width - pad:.1f} {height} L{pad:.1f} {height} Z"
+    return (f'<svg class="sparkline" viewBox="0 0 {width} {height}" preserveAspectRatio="none"'
+            f' aria-hidden="true"><path class="area" d="{area}"/>'
+            f'<path class="line" d="{line}"/></svg>')
 
 
-def etappen_name(etappe):
-    return f'{etappe["von"]} → {etappe["nach"]}'
+def stage_name(stage):
+    return f'{stage["from"]} → {stage["to"]}'
 
 
-# --- Seitenrahmen ----------------------------------------------------------
-
-def rahmen(reise, inhalt, *, titel, beschreibung, css_extra, skripte, aktiv, og_titel=None):
-    kopf = (TEMPLATES / "_kopf.html").read_text(encoding="utf-8")
-    fuss = (TEMPLATES / "_fuss.html").read_text(encoding="utf-8")
-    nav = {"start": "", "etappen": "", "packliste": ""}
-    nav[aktiv] = ' aria-current="page"'
-    kopf = fuellen(kopf, {
-        "titel": e(titel),
-        "beschreibung": e(beschreibung),
-        "og_titel": e(og_titel or titel),
-        "marke": e(reise["titel"]),
-        "css_extra": css_extra,
-        "nav_start": nav["start"],
-        "nav_etappen": nav["etappen"],
-        "nav_packliste": nav["packliste"],
-    })
-    fuss = fuellen(fuss, {
-        "stravaProfil": e(reise["stravaProfil"]),
-        "quaeldichProfil": e(reise["quaeldichProfil"]),
-        "skripte": skripte,
-    })
-    return kopf + inhalt + fuss
+def fill(template, values):
+    for key, value in values.items():
+        template = template.replace("{{" + key + "}}", value)
+    return template
 
 
-def fuellen(vorlage, werte):
-    for schluessel, wert in werte.items():
-        vorlage = vorlage.replace("{{" + schluessel + "}}", wert)
-    return vorlage
-
-
-def pruefen_vollstaendig(name, text):
+def assert_filled(name, text):
     if "{{" in text:
-        rest = text[text.index("{{"):text.index("{{") + 40]
-        sys.exit(f"{name}: unersetzter Platzhalter {rest!r}")
+        snippet = text[text.index("{{"):text.index("{{") + 40]
+        sys.exit(f"{name}: placeholder left unfilled: {snippet!r}")
 
 
-# --- Startseite ------------------------------------------------------------
-
-def seite_start(reise, heute):
-    etappen = reise["etappen"]
-    gesamt_km = sum(x["distanzKm"] for x in etappen)
-    gesamt_hm = sum(x["aufstiegM"] for x in etappen)
-    paesse = sum(len(x["paesse"]) for x in etappen)
-    gefahren = [x for x in etappen if status_von(x["datum"], heute) != "geplant"]
-    gefahren_km = sum(x["distanzKm"] for x in gefahren)
-    offen = len(etappen) - len(gefahren)
-
-    kennzahlen = "".join([
-        kennzahl("Distanz", km(gesamt_km)),
-        kennzahl("Höhenmeter", meter(gesamt_hm, "+"), "wert-auf"),
-        kennzahl("Pässe", zahl(paesse) if paesse else "—"),
-        kennzahl("Etappen", f"{len(etappen)}"),
-    ])
-
-    if reise.get("titelbild"):
-        bild = (f'<figure class="hero-bild"><img src="{e(reise["titelbild"]["datei"])}"'
-                f' alt="{e(reise["titelbild"].get("titel", ""))}">'
-                f'<div class="tricolore" aria-hidden="true"></div></figure>')
-    else:
-        bild = ('<div class="hero-bild leer">'
-                '<p>Hier kommt das Titelbild hin.<br><span class="mono" style="font-size:12px">'
-                'data/reise.json → "titelbild"</span></p>'
-                '<div class="tricolore" aria-hidden="true"></div></div>')
-
-    # Aufruf zum Weiterklicken: heutige Etappe, sonst letzte gefahrene, sonst erste.
-    heutige = next((x for x in etappen if status_von(x["datum"], heute) == "heute"), None)
-    ziel_etappe = heutige or (gefahren[-1] if gefahren else etappen[0])
-    if heutige:
-        cta_text, e3_titel = "Etappe von heute", "Heute"
-        e3_text = f'Tag {ziel_etappe["nr"]}: {etappen_name(ziel_etappe)} — {km(ziel_etappe["distanzKm"])}, {meter(ziel_etappe["aufstiegM"], "+")}.'
-    elif gefahren:
-        cta_text, e3_titel = "Zuletzt gefahren", "Zuletzt gefahren"
-        e3_text = f'Tag {ziel_etappe["nr"]}: {etappen_name(ziel_etappe)} — {km(ziel_etappe["distanzKm"])}, {meter(ziel_etappe["aufstiegM"], "+")}.'
-    else:
-        cta_text, e3_titel = "Erste Etappe", "Der Anfang"
-        e3_text = f'Tag 1: {etappen_name(ziel_etappe)} — {km(ziel_etappe["distanzKm"])} den Rhein hinunter.'
-
-    if offen == 0:
-        fortschritt_text = f'{reise["ziel"]} erreicht · alle {len(etappen)} Etappen gefahren'
-    else:
-        fortschritt_text = (f'{len(gefahren)} von {len(etappen)} Etappen gefahren · '
-                            f'{km(gefahren_km)} von {km(gesamt_km)} · noch {offen} '
-                            f'{"Etappe" if offen == 1 else "Etappen"}')
-
-    zeilen = []
-    for x in etappen:
-        st = status_von(x["datum"], heute)
-        paesse_text = ", ".join(p["name"] for p in x["paesse"]) or \
-            (", ".join(x["geplant"]) + " (geplant)" if x["geplant"] else "—")
-        zeilen.append(
-            f'<tr class="{"ist-heute" if st == "heute" else ""}">'
-            f'<td class="nr">{x["nr"]}</td>'
-            f'<td class="mono" style="white-space:nowrap">{e(datum_kurz(x["datum"]))}</td>'
-            f'<td><a href="{x["id"]}.html">{e(etappen_name(x))}</a> {status_badge(st) if st != "gefahren" else ""}</td>'
-            f'<td class="zahl">{km(x["distanzKm"])}</td>'
-            f'<td class="zahl wert-auf">{meter(x["aufstiegM"], "+")}</td>'
-            f'<td class="paesse-zelle">{e(paesse_text)}</td></tr>')
-
-    summe = (f'<tr><td></td><td></td><td>Gesamt</td>'
-             f'<td class="zahl">{km(gesamt_km)}</td>'
-             f'<td class="zahl wert-auf">{meter(gesamt_hm, "+")}</td><td></td></tr>')
-
-    inhalt = fuellen((TEMPLATES / "index.html").read_text(encoding="utf-8"), {
-        "eyebrow": f'Bikepacking · {len(etappen)} Etappen',
-        "titel": e(reise["titel"]),
-        "route": f'{e(reise["start"])} → {e(reise["ziel"])}',
-        "zeitraum": e(zeitraum(reise["von"], reise["bis"])),
-        "kennzahlen": kennzahlen,
-        "fortschritt": f'{gefahren_km / gesamt_km * 100:.1f}',
-        "fortschritt_text": e(fortschritt_text),
-        "cta_ziel": f'{ziel_etappe["id"]}.html',
-        "cta_text": e(cta_text),
-        "titelbild": bild,
-        "anzahl_etappen": str(len(etappen)),
-        "start_ort": e(reise["start"]),
-        "ziel_ort": e(reise["ziel"]),
-        "einstieg3_titel": e(e3_titel),
-        "einstieg3_text": e(e3_text),
-        "tabelle": "".join(zeilen),
-        "tabelle_summe": summe,
-        "tabelle_note": "Distanzen und Höhenmeter aus den aufgezeichneten bzw. geplanten Tracks.",
+def page(trip, body, *, title, description, extra_css, scripts, active, og_title=None):
+    header = (TEMPLATES / "_header.html").read_text(encoding="utf-8")
+    footer = (TEMPLATES / "_footer.html").read_text(encoding="utf-8")
+    nav = {"home": "", "stages": "", "packing": ""}
+    nav[active] = ' aria-current="page"'
+    header = fill(header, {
+        "title": e(title),
+        "description": e(description),
+        "og_title": e(og_title or title),
+        "brand": e(trip["title"]),
+        "extra_css": extra_css,
+        "nav_home": nav["home"],
+        "nav_stages": nav["stages"],
+        "nav_packing": nav["packing"],
     })
-    pruefen_vollstaendig("index.html", inhalt)
+    footer = fill(footer, {
+        "strava_profile": e(trip["stravaProfile"]),
+        "quaeldich_profile": e(trip["quaeldichProfile"]),
+        "scripts": scripts,
+    })
+    return header + body + footer
 
-    status_map = {x["id"]: status_von(x["datum"], heute) for x in etappen}
-    namen_map = {x["id"]: etappen_name(x) for x in etappen}
-    skripte = (
+
+# --- loading ---------------------------------------------------------------
+
+def load_stages(today, smoothing):
+    """Merge every gpx/*.gpx with its entry in data/trip.json."""
+    trip = json.loads((DATA / "trip.json").read_text(encoding="utf-8"))
+    content = {s["id"]: s for s in trip["stages"]}
+    files = sorted(GPX_DIR.glob("*.gpx"))
+    if not files:
+        sys.exit(f"no GPX files in {GPX_DIR.relative_to(ROOT)}/ -- nothing to build")
+
+    stages, tracks = [], {}
+    for path in files:
+        sid = path.stem
+        if sid not in content:
+            sys.exit(f"{path.name}: no entry with \"id\": \"{sid}\" in data/trip.json.\n"
+                     f"  Add at least: {{\"id\": \"{sid}\", \"no\": N, \"from\": \"…\", "
+                     f"\"to\": \"…\", \"date\": \"YYYY-MM-DD\"}}")
+        try:
+            measured = gpx.parse(path, smoothing=smoothing)
+        except gpx.GpxError as error:
+            sys.exit(str(error))
+
+        stage = dict(content[sid])
+        for field in ("no", "from", "to", "date"):
+            if not stage.get(field):
+                sys.exit(f'data/trip.json, {sid}: "{field}" is missing')
+        stage.update(measured)
+        stage["status"] = status_of(stage["date"], today)
+        stage.setdefault("passes", [])
+        stage.setdefault("plannedPasses", [])
+        stage.setdefault("strava", [])
+        stage.setdefault("summary", [])
+        stage.setdefault("photos", [])
+        stages.append(stage)
+        tracks[sid] = {
+            "id": sid,
+            "points": measured["points"],
+            "waypoints": measured["waypoints"],
+        }
+
+    missing_gpx = [sid for sid in content if sid not in tracks]
+    if missing_gpx:
+        sys.exit("data/trip.json lists stages without a GPX file: "
+                 + ", ".join(f"{sid} (expected gpx/{sid}.gpx)" for sid in sorted(missing_gpx)))
+
+    stages.sort(key=lambda s: s["no"])
+    if [s["no"] for s in stages] != list(range(1, len(stages) + 1)):
+        sys.exit('data/trip.json: "no" must run 1..N without gaps or duplicates')
+    return trip, stages, tracks
+
+
+# --- landing page ----------------------------------------------------------
+
+def render_home(trip, stages):
+    total_km = sum(s["distanceKm"] for s in stages)
+    total_up = sum(s["ascentM"] for s in stages)
+    pass_count = sum(len(s["passes"]) for s in stages)
+    ridden = [s for s in stages if s["status"] != "planned"]
+    ridden_km = sum(s["distanceKm"] for s in ridden)
+    left = len(stages) - len(ridden)
+    start_place, end_place = stages[0]["from"], stages[-1]["to"]
+
+    if trip.get("coverPhoto"):
+        cover = (f'<figure class="hero-image"><img src="{e(trip["coverPhoto"]["file"])}"'
+                 f' alt="{e(trip["coverPhoto"].get("caption", ""))}">'
+                 f'<div class="tricolore" aria-hidden="true"></div></figure>')
+    else:
+        cover = ('<div class="hero-image empty">'
+                 '<p>Hier kommt das Titelbild hin.<br><span class="mono" style="font-size:12px">'
+                 'data/trip.json → "coverPhoto"</span></p>'
+                 '<div class="tricolore" aria-hidden="true"></div></div>')
+
+    today_stage = next((s for s in stages if s["status"] == "today"), None)
+    target = today_stage or (ridden[-1] if ridden else stages[0])
+    if today_stage:
+        cta_text = card_title = "Etappe von heute"
+        card_title = "Heute"
+    elif ridden:
+        cta_text = card_title = "Zuletzt gefahren"
+    else:
+        cta_text, card_title = "Erste Etappe", "Der Anfang"
+    card_text = (f'Tag {target["no"]}: {stage_name(target)} — {km(target["distanceKm"])}, '
+                 f'{metres(target["ascentM"], "+")}.')
+
+    if left == 0:
+        progress_note = f'{end_place} erreicht · alle {len(stages)} Etappen gefahren'
+    else:
+        progress_note = (f'{len(ridden)} von {len(stages)} Etappen gefahren · '
+                         f'{km(ridden_km)} von {km(total_km)} · noch {left} '
+                         f'{"Etappe" if left == 1 else "Etappen"}')
+
+    rows = []
+    for s in stages:
+        passes = ", ".join(p["name"] for p in s["passes"]) or (
+            ", ".join(s["plannedPasses"]) + " (geplant)" if s["plannedPasses"] else "—")
+        rows.append(
+            f'<tr class="{"is-today" if s["status"] == "today" else ""}">'
+            f'<td class="index">{s["no"]}</td>'
+            f'<td class="mono" style="white-space:nowrap">{e(short_date(s["date"]))}</td>'
+            f'<td><a href="{s["id"]}.html">{e(stage_name(s))}</a> '
+            f'{status_badge(s["status"]) if s["status"] != "ridden" else ""}</td>'
+            f'<td class="num">{km(s["distanceKm"])}</td>'
+            f'<td class="num value-up">{metres(s["ascentM"], "+")}</td>'
+            f'<td class="passes-cell">{e(passes)}</td></tr>')
+
+    body = fill((TEMPLATES / "index.html").read_text(encoding="utf-8"), {
+        "eyebrow": f"Bikepacking · {len(stages)} Etappen",
+        "title": e(trip["title"]),
+        "route": f"{e(start_place)} → {e(end_place)}",
+        "dates": e(date_range(stages[0]["date"], stages[-1]["date"])),
+        "stats": "".join([
+            stat("Distanz", km(total_km)),
+            stat("Höhenmeter", metres(total_up, "+"), "value-up"),
+            stat("Pässe", number(pass_count) if pass_count else "—"),
+            stat("Etappen", str(len(stages))),
+        ]),
+        "progress": f"{ridden_km / total_km * 100:.1f}",
+        "progress_note": e(progress_note),
+        "cta_href": f'{target["id"]}.html',
+        "cta_text": e(cta_text),
+        "cover": cover,
+        "stage_count": str(len(stages)),
+        "start_place": e(start_place),
+        "end_place": e(end_place),
+        "third_card_title": e(card_title),
+        "third_card_text": e(card_text),
+        "rows": "".join(rows),
+        "total_row": (f'<tr><td></td><td></td><td>Gesamt</td>'
+                      f'<td class="num">{km(total_km)}</td>'
+                      f'<td class="num value-up">{metres(total_up, "+")}</td><td></td></tr>'),
+        "table_note": "Distanzen und Höhenmeter sind aus den GPX-Dateien der Etappen berechnet.",
+    })
+    assert_filled("index.html", body)
+
+    scripts = (
         '<script src="assets/vendor/leaflet/leaflet.js"></script>\n'
         '<script src="assets/js/format.js"></script>\n'
-        '<script src="assets/js/karte.js"></script>\n'
-        f'<script>window.RGA_STATUS={json.dumps(status_map, ensure_ascii=False)};'
-        f'window.RGA_NAMEN={json.dumps(namen_map, ensure_ascii=False)};</script>\n'
-        '<script src="assets/js/start.js"></script>'
+        '<script src="assets/js/map.js"></script>\n'
+        f'<script>window.RGA_STATUS={json.dumps({s["id"]: s["status"] for s in stages})};'
+        f'window.RGA_NAMES={json.dumps({s["id"]: stage_name(s) for s in stages}, ensure_ascii=False)};</script>\n'
+        '<script src="assets/js/home.js"></script>'
     )
-    return rahmen(
-        reise, inhalt,
-        titel=f'{reise["titel"]} — Bikepacking auf der Route des Grandes Alpes',
-        beschreibung=(f'{km(gesamt_km)} und {meter(gesamt_hm, "+")} von {reise["start"]} nach '
-                      f'{reise["ziel"]}: {len(etappen)} Etappen mit Karten, Höhenprofilen, '
-                      f'Übernachtungen, Fotos und Packliste.'),
-        css_extra='<link rel="stylesheet" href="assets/css/site.css">\n'
-                  '<link rel="stylesheet" href="assets/vendor/leaflet/leaflet.css">',
-        skripte=skripte, aktiv="start",
+    return page(
+        trip, body,
+        title=f'{trip["title"]} — Bikepacking auf der Route des Grandes Alpes',
+        description=(f'{km(total_km)} und {metres(total_up, "+")} von {start_place} nach '
+                     f'{end_place}: {len(stages)} Etappen mit Karten, Höhenprofilen, '
+                     f'Übernachtungen, Fotos und Packliste.'),
+        extra_css=('<link rel="stylesheet" href="assets/css/site.css">\n'
+                   '<link rel="stylesheet" href="assets/vendor/leaflet/leaflet.css">'),
+        scripts=scripts, active="home",
     )
 
 
-# --- Etappenübersicht ------------------------------------------------------
+# --- stage overview --------------------------------------------------------
 
-def seite_etappen(reise, heute):
-    etappen = reise["etappen"]
-    gesamt_km = sum(x["distanzKm"] for x in etappen)
-    gesamt_hm = sum(x["aufstiegM"] for x in etappen)
-    gesamt_ab = sum(x["abstiegM"] for x in etappen)
-    hoechster = max(etappen, key=lambda x: x["maxHoehe"])
+def render_stages(trip, stages):
+    total_km = sum(s["distanceKm"] for s in stages)
+    total_up = sum(s["ascentM"] for s in stages)
+    total_down = sum(s["descentM"] for s in stages)
+    highest = max(stages, key=lambda s: s["maxEleM"])
 
-    karten = []
-    for x in etappen:
-        st = status_von(x["datum"], heute)
-        paesse = " · ".join(p["name"] for p in x["paesse"]) or " · ".join(x["geplant"])
-        karten.append(
-            f'<a class="etappe-karte ist-{st}" href="{x["id"]}.html">'
-            f'<span class="etappe-kopf"><span class="etappe-nr">Tag {x["nr"]}</span>'
-            f'<span class="etappe-datum">{e(datum_kurz(x["datum"]))}</span></span>'
-            + f'<span class="etappe-name">{e(etappen_name(x))}</span>'
-            + (f'<span class="etappe-paesse">{e(paesse)}</span>' if paesse else "")
-            + (f'<span class="etappe-luecke">{e(x["luecke"])}</span>' if x["luecke"] else "")
-            + sparkline(x["profil"])
-            + f'<span class="etappe-zahlen"><span><b>{km(x["distanzKm"])}</b></span>'
-              f'<span><b>{meter(x["aufstiegM"], "+")}</b></span>'
-              f'<span><b>{meter(x["abstiegM"], "-")}</b></span></span>'
-            + (f'<span>{status_badge(st)}</span>' if st != "gefahren" else "")
+    cards = []
+    for s in stages:
+        passes = " · ".join(p["name"] for p in s["passes"]) or " · ".join(s["plannedPasses"])
+        cards.append(
+            f'<a class="stage-card is-{s["status"]}" href="{s["id"]}.html">'
+            f'<span class="stage-card-head"><span class="stage-index">Tag {s["no"]}</span>'
+            f'<span class="stage-date">{e(short_date(s["date"]))}</span></span>'
+            f'<span class="stage-name">{e(stage_name(s))}</span>'
+            + (f'<span class="stage-passes">{e(passes)}</span>' if passes else "")
+            + (f'<span class="stage-gap">{e(s["gap"])}</span>' if s.get("gap") else "")
+            + sparkline(s["profile"])
+            + f'<span class="stage-figures"><span><b>{km(s["distanceKm"])}</b></span>'
+              f'<span><b>{metres(s["ascentM"], "+")}</b></span>'
+              f'<span><b>{metres(s["descentM"], "-")}</b></span></span>'
+            + (f"<span>{status_badge(s['status'])}</span>" if s["status"] != "ridden" else "")
             + '</a>')
 
-    mit_paessen = [x for x in etappen if x["paesse"]]
-    anzahl_paesse = sum(len(x["paesse"]) for x in mit_paessen)
-    if anzahl_paesse:
-        manuell = any(p.get("manuell") for x in mit_paessen for p in x["paesse"])
-        tage = "".join(
-            f'<div class="pass-tag"><span class="pass-tag-label">'
-            f'<a href="{x["id"]}.html">Tag {x["nr"]} · {e(datum_kurz(x["datum"]))}</a></span>'
-            f'<div class="chips">{pass_chips(x["paesse"])}</div></div>'
-            for x in mit_paessen)
-        panel = (f'<div class="pass-panel"><h3>Gefahrene Pässe · {anzahl_paesse}</h3>'
+    with_passes = [s for s in stages if s["passes"]]
+    pass_count = sum(len(s["passes"]) for s in with_passes)
+    if pass_count:
+        manual = any(p.get("manual") for s in with_passes for p in s["passes"])
+        days = "".join(
+            f'<div class="pass-day"><span class="pass-day-label">'
+            f'<a href="{s["id"]}.html">Tag {s["no"]} · {e(short_date(s["date"]))}</a></span>'
+            f'<div class="chips">{pass_chips(s["passes"])}</div></div>'
+            for s in with_passes)
+        panel = (f'<div class="pass-panel"><h3>Gefahrene Pässe · {pass_count}</h3>'
                  f'<p>Aus den Strava-Notizen, verlinkt auf '
-                 f'<a href="{e(reise["quaeldichProfil"])}" target="_blank" rel="noopener">quäldich.de</a>.'
-                 + (" Gestrichelt umrandet = von Hand ergänzt." if manuell else "")
-                 + f'</p>{tage}</div>')
+                 f'<a href="{e(trip["quaeldichProfile"])}" target="_blank" rel="noopener">quäldich.de</a>.'
+                 + (" Gestrichelt umrandet = von Hand ergänzt." if manual else "")
+                 + f'</p>{days}</div>')
     else:
         panel = ""
 
-    kennzahlen = "".join([
-        kennzahl("Distanz", km(gesamt_km)),
-        kennzahl("Aufstieg", meter(gesamt_hm, "+"), "wert-auf"),
-        kennzahl("Abstieg", meter(gesamt_ab, "-"), "wert-ab"),
-        kennzahl("Höchster Punkt", f'{meter(hoechster["maxHoehe"])}'),
-    ])
-
-    inhalt = fuellen((TEMPLATES / "etappen.html").read_text(encoding="utf-8"), {
-        "eyebrow": f'{e(reise["start"])} → {e(reise["ziel"])} · {e(zeitraum(reise["von"], reise["bis"]))}',
-        "einleitung": (f'{len(etappen)} Tage vom Rhein an die Riviera. Jede Etappe hat ihre eigene Seite '
-                       f'mit Karte, Höhenprofil, Übernachtung, Zusammenfassung und Fotos. '
-                       f'Der höchste Punkt liegt auf Tag {hoechster["nr"]} bei {meter(hoechster["maxHoehe"])}.'),
-        "kennzahlen": kennzahlen,
-        "karten": "".join(karten),
+    body = fill((TEMPLATES / "stages.html").read_text(encoding="utf-8"), {
+        "eyebrow": (f'{e(stages[0]["from"])} → {e(stages[-1]["to"])} · '
+                    f'{e(date_range(stages[0]["date"], stages[-1]["date"]))}'),
+        "intro": (f'{len(stages)} Tage vom Rhein an die Riviera. Jede Etappe hat ihre eigene Seite '
+                  f'mit Karte, Höhenprofil, Übernachtung, Zusammenfassung und Fotos. '
+                  f'Der höchste Punkt liegt auf Tag {highest["no"]} bei {metres(highest["maxEleM"])}.'),
+        "stats": "".join([
+            stat("Distanz", km(total_km)),
+            stat("Aufstieg", metres(total_up, "+"), "value-up"),
+            stat("Abstieg", metres(total_down, "-"), "value-down"),
+            stat("Höchster Punkt", metres(highest["maxEleM"])),
+        ]),
+        "cards": "".join(cards),
         "pass_panel": panel,
     })
-    pruefen_vollstaendig("etappen.html", inhalt)
-    return rahmen(
-        reise, inhalt,
-        titel=f'Etappen — {reise["titel"]}',
-        beschreibung=(f'Alle {len(etappen)} Etappen von {reise["start"]} nach {reise["ziel"]}: '
-                      f'{km(gesamt_km)}, {meter(gesamt_hm, "+")}, {anzahl_paesse} Pässe.'),
-        css_extra='<link rel="stylesheet" href="assets/css/site.css">',
-        skripte="", aktiv="etappen",
+    assert_filled("stages.html", body)
+    return page(
+        trip, body,
+        title=f'Etappen — {trip["title"]}',
+        description=(f'Alle {len(stages)} Etappen von {stages[0]["from"]} nach {stages[-1]["to"]}: '
+                     f'{km(total_km)}, {metres(total_up, "+")}, {pass_count} Pässe.'),
+        extra_css='<link rel="stylesheet" href="assets/css/site.css">',
+        scripts="", active="stages",
     )
 
 
-# --- Eine Etappe -----------------------------------------------------------
+# --- one stage -------------------------------------------------------------
 
-def sterne(n):
-    voll = "★" * int(n)
-    leer = "☆" * (5 - int(n))
-    return (f'<span class="sterne" title="{n} von 5">{voll}'
-            f'<span class="aus">{leer}</span></span>')
+def stars(rating):
+    full = "★" * int(rating)
+    empty = "☆" * (5 - int(rating))
+    return f'<span class="stars" title="{rating} von 5">{full}<span class="off">{empty}</span></span>'
 
 
-def block_uebernachtung(etappe):
-    u = etappe.get("uebernachtung")
-    if not u:
-        return ('<!-- Eintragen in data/reise.json: "uebernachtung": {"name":…, "art":…, "ort":…,'
-                ' "url":…, "lat":…, "lon":…, "preisEur":…, "bewertung":…, "notiz":…} -->\n'
-                '<p class="leer-hinweis">Für diesen Tag ist noch keine Übernachtung eingetragen.</p>')
+def lodging_block(stage):
+    lodging = stage.get("lodging")
+    if not lodging:
+        return ('<!-- Add to data/trip.json: "lodging": {"name":…, "type":…, "place":…,'
+                ' "url":…, "lat":…, "lon":…, "priceEur":…, "rating":…, "eleM":…, "note":…} -->\n'
+                '<p class="empty-note">Für diesen Tag ist noch keine Übernachtung eingetragen.</p>')
 
-    name = e(u["name"])
-    if u.get("url"):
-        name = f'<a href="{e(u["url"])}" target="_blank" rel="noopener">{name}</a>'
+    name = e(lodging["name"])
+    if lodging.get("url"):
+        name = f'<a href="{e(lodging["url"])}" target="_blank" rel="noopener">{name}</a>'
 
-    zahlen = []
-    if u.get("preisEur") is not None:
-        zahlen.append(kennzahl("Preis", f'{zahl(u["preisEur"])} €'))
-    if u.get("bewertung"):
-        zahlen.append(f'<div><dt>Bewertung</dt><dd>{sterne(u["bewertung"])}</dd></div>')
-    if u.get("hoehe"):
-        zahlen.append(kennzahl("Höhe", meter(u["hoehe"])))
+    figures = []
+    if lodging.get("priceEur") is not None:
+        figures.append(stat("Preis", f'{number(lodging["priceEur"])} €'))
+    if lodging.get("rating"):
+        figures.append(f'<div><dt>Bewertung</dt><dd>{stars(lodging["rating"])}</dd></div>')
+    if lodging.get("eleM"):
+        figures.append(stat("Höhe", metres(lodging["eleM"])))
 
-    teile = ['<div class="uebernachtung-karte">', '<div class="uebernachtung-kopf">', f'<h3>{name}</h3>']
-    if u.get("art"):
-        teile.append(f'<span class="art-badge">{e(u["art"])}</span>')
-    teile.append('</div>')
-    if u.get("ort"):
-        teile.append(f'<p class="uebernachtung-ort">{e(u["ort"])}</p>')
-    if u.get("notiz"):
-        teile.append(f'<p class="uebernachtung-notiz">{e(u["notiz"])}</p>')
-    if zahlen:
-        teile.append(f'<dl class="kennzahlen uebernachtung-zahlen">{"".join(zahlen)}</dl>')
-    teile.append('</div>')
+    parts = ['<div class="lodging-card">', '<div class="lodging-head">', f"<h3>{name}</h3>"]
+    if lodging.get("type"):
+        parts.append(f'<span class="type-badge">{e(lodging["type"])}</span>')
+    parts.append("</div>")
+    if lodging.get("place"):
+        parts.append(f'<p class="lodging-place">{e(lodging["place"])}</p>')
+    if lodging.get("note"):
+        parts.append(f'<p class="lodging-note">{e(lodging["note"])}</p>')
+    if figures:
+        parts.append(f'<dl class="stats lodging-figures">{"".join(figures)}</dl>')
+    parts.append("</div>")
 
-    if u.get("lat") and u.get("lon"):
-        teile.append('<p class="uebernachtung-hinweis">'
+    if lodging.get("lat") and lodging.get("lon"):
+        parts.append('<p class="lodging-hint">'
                      'Auf der Karte oben ist die Übernachtung mit einer Fahne markiert.</p>')
-    return f'<div class="uebernachtung">{"".join(teile)}</div>'
+    return f'<div class="lodging">{"".join(parts)}</div>'
 
 
-def block_zusammenfassung(etappe):
-    absaetze = etappe.get("zusammenfassung") or []
-    if not absaetze:
-        return ('<!-- Eintragen in data/reise.json: "zusammenfassung": ["Erster Absatz", "Zweiter Absatz"] -->\n'
-                '<p class="leer-hinweis">Die Zusammenfassung zu diesem Tag fehlt noch.</p>')
-    return ('<div class="zusammenfassung">'
-            + "".join(f"<p>{e(a)}</p>" for a in absaetze) + "</div>")
+def summary_block(stage):
+    paragraphs = stage.get("summary") or []
+    if not paragraphs:
+        return ('<!-- Add to data/trip.json: "summary": ["Erster Absatz", "Zweiter Absatz"] -->\n'
+                '<p class="empty-note">Die Zusammenfassung zu diesem Tag fehlt noch.</p>')
+    return '<div class="summary">' + "".join(f"<p>{e(p)}</p>" for p in paragraphs) + "</div>"
 
 
-def block_fotos(etappe):
-    fotos = etappe.get("fotos") or []
-    if not fotos:
-        return ('<!-- Bilder nach fotos/{id}/ legen, Thumbs mit tools/fotos_vorbereiten.py erzeugen,\n'
-                '     dann in data/reise.json: "fotos": [{"datei": "img_1234.jpg", "titel": "…"}] -->\n'
-                '<p class="leer-hinweis">Für diesen Tag sind noch keine Fotos eingepflegt.</p>').replace(
-                    "{id}", etappe["id"])
-    ordner = f'fotos/{etappe["id"]}'
-    knoepfe = []
-    for f in fotos:
-        titel = e(f.get("titel", ""))
-        knoepfe.append(
-            f'<li><button type="button" data-gross="{ordner}/{e(f["datei"])}" data-titel="{titel}">'
-            f'<img src="{ordner}/thumbs/{e(f["datei"])}" alt="{titel}" loading="lazy" decoding="async">'
-            f'</button></li>')
-    return f'<ul class="foto-raster" id="fotoRaster">{"".join(knoepfe)}</ul>'
+def photo_block(stage):
+    photos = stage.get("photos") or []
+    folder = f'photos/{stage["id"]}'
+    if not photos:
+        return (f'<!-- Put images in {folder}/, build thumbs with tools/prepare_photos.py,\n'
+                f'     then in data/trip.json: "photos": [{{"file": "img-1234.jpg", "caption": "…"}}] -->\n'
+                f'<p class="empty-note">Für diesen Tag sind noch keine Fotos eingepflegt.</p>')
+    buttons = []
+    for photo in photos:
+        caption = e(photo.get("caption", ""))
+        buttons.append(
+            f'<li><button type="button" data-full="{folder}/{e(photo["file"])}"'
+            f' data-caption="{caption}">'
+            f'<img src="{folder}/thumbs/{e(photo["file"])}" alt="{caption}"'
+            f' loading="lazy" decoding="async"></button></li>')
+    return f'<ul class="photo-grid" id="photoGrid">{"".join(buttons)}</ul>'
 
 
-def seite_tag(reise, etappe, heute):
-    etappen = reise["etappen"]
-    st = status_von(etappe["datum"], heute)
-    nr = etappe["nr"]
-    kennzahlen = "".join([
-        kennzahl("Distanz", km(etappe["distanzKm"])),
-        kennzahl("Aufstieg", meter(etappe["aufstiegM"], "+"), "wert-auf"),
-        kennzahl("Abstieg", meter(etappe["abstiegM"], "-"), "wert-ab"),
-        kennzahl("Höhe", f'{zahl(etappe["minHoehe"])}–{zahl(etappe["maxHoehe"])} m'),
-        kennzahl("Pässe", str(len(etappe["paesse"])) if etappe["paesse"] else "—"),
-    ])
-    luecke = (f'<p class="tag-luecke"><b>Lücke im Track:</b> {e(etappe["luecke"])}</p>'
-              if etappe["luecke"] else "")
-    paesse = pass_chips(etappe["paesse"]) or (
-        f'<span class="chip-leer">Geplant: {e(", ".join(etappe["geplant"]))}</span>'
-        if etappe["geplant"] else '<span class="chip-leer">keine</span>')
+def render_day(trip, stage, stages):
+    no = stage["no"]
+    neighbours = []
+    if no > 1:
+        previous = stages[no - 2]
+        neighbours.append(f'<a class="prev" href="{previous["id"]}.html">'
+                          f'<span class="direction">← Tag {previous["no"]}</span>'
+                          f'<span class="target">{e(stage_name(previous))}</span></a>')
+    if no < len(stages):
+        following = stages[no]
+        neighbours.append(f'<a class="next" href="{following["id"]}.html">'
+                          f'<span class="direction">Tag {following["no"]} →</span>'
+                          f'<span class="target">{e(stage_name(following))}</span></a>')
 
-    nachbarn = []
-    if nr > 1:
-        v = etappen[nr - 2]
-        nachbarn.append(f'<a class="zurueck" href="{v["id"]}.html"><span class="richtung">← Tag {v["nr"]}</span>'
-                        f'<span class="ziel-name">{e(etappen_name(v))}</span></a>')
-    if nr < len(etappen):
-        n = etappen[nr]
-        nachbarn.append(f'<a class="weiter" href="{n["id"]}.html"><span class="richtung">Tag {n["nr"]} →</span>'
-                        f'<span class="ziel-name">{e(etappen_name(n))}</span></a>')
+    strip = "".join(
+        f'<a class="is-{s["status"]}" href="{s["id"]}.html"'
+        + (' aria-current="page"' if s["id"] == stage["id"] else "")
+        + f'><span class="index">Tag {s["no"]}</span>'
+          f'<span class="place">{e(s["to"])}</span>'
+          f'<span class="km">{km(s["distanceKm"])}</span></a>'
+        for s in stages)
 
-    streifen = "".join(
-        f'<a class="ist-{status_von(x["datum"], heute)}" href="{x["id"]}.html"'
-        + (' aria-current="page"' if x["id"] == etappe["id"] else "")
-        + f'><span class="nr">Tag {x["nr"]}</span>'
-          f'<span class="ort">{e(x["nach"])}</span>'
-          f'<span class="km">{km(x["distanzKm"])}</span></a>'
-        for x in etappen)
+    passes = pass_chips(stage["passes"]) or (
+        f'<span class="chip-empty">Geplant: {e(", ".join(stage["plannedPasses"]))}</span>'
+        if stage["plannedPasses"] else '<span class="chip-empty">keine</span>')
+    photos = stage.get("photos") or []
 
-    fotos = etappe.get("fotos") or []
-    inhalt = fuellen((TEMPLATES / "tag.html").read_text(encoding="utf-8"), {
-        "nr": str(nr),
-        "anzahl": str(len(etappen)),
-        "datum": e(datum_lang(etappe["datum"])),
-        "status_badge": status_badge(st),
-        "von": e(etappe["von"]),
-        "nach": e(etappe["nach"]),
-        "luecke": luecke,
-        "kennzahlen": kennzahlen,
-        "pass_label": "Pass" if len(etappe["paesse"]) == 1 else "Pässe",
-        "paesse": paesse,
-        "strava": strava_chips(etappe, st),
-        "profil_beschreibung": e(f'{zahl(etappe["minHoehe"])} bis {zahl(etappe["maxHoehe"])} Meter, '
-                                 f'insgesamt {meter(etappe["aufstiegM"], "+")} auf {km(etappe["distanzKm"])}'),
-        "uebernachtung": block_uebernachtung(etappe),
-        "zusammenfassung": block_zusammenfassung(etappe),
-        "foto_anzahl": f'<span class="foto-anzahl">{len(fotos)}</span>' if fotos else "",
-        "fotos": block_fotos(etappe),
-        "nachbarn": "".join(nachbarn),
-        "streifen": streifen,
+    body = fill((TEMPLATES / "day.html").read_text(encoding="utf-8"), {
+        "no": str(no),
+        "count": str(len(stages)),
+        "date": e(long_date(stage["date"])),
+        "status_badge": status_badge(stage["status"]),
+        "from": e(stage["from"]),
+        "to": e(stage["to"]),
+        "gap": (f'<p class="day-gap"><b>Lücke im Track:</b> {e(stage["gap"])}</p>'
+                if stage.get("gap") else ""),
+        "stats": "".join([
+            stat("Distanz", km(stage["distanceKm"])),
+            stat("Aufstieg", metres(stage["ascentM"], "+"), "value-up"),
+            stat("Abstieg", metres(stage["descentM"], "-"), "value-down"),
+            stat("Höhe", f'{number(stage["minEleM"])}–{number(stage["maxEleM"])} m'),
+            stat("Pässe", str(len(stage["passes"])) if stage["passes"] else "—"),
+        ]),
+        "pass_label": "Pass" if len(stage["passes"]) == 1 else "Pässe",
+        "passes": passes,
+        "strava": strava_chips(stage),
+        "profile_label": e(f'{number(stage["minEleM"])} bis {number(stage["maxEleM"])} Meter, '
+                           f'insgesamt {metres(stage["ascentM"], "+")} auf {km(stage["distanceKm"])}'),
+        "lodging": lodging_block(stage),
+        "summary": summary_block(stage),
+        "photo_count": f'<span class="photo-count">{len(photos)}</span>' if photos else "",
+        "photos": photo_block(stage),
+        "neighbours": "".join(neighbours),
+        "strip": strip,
     })
-    pruefen_vollstaendig(f'{etappe["id"]}.html', inhalt)
+    assert_filled(f'{stage["id"]}.html', body)
 
-    u = etappe.get("uebernachtung") or {}
-    bett = None
-    if u.get("lat") and u.get("lon"):
-        bett = {"pos": [u["lat"], u["lon"]],
-                "html": f'<b>{u["name"]}</b>' + (f'{u.get("art", "")} · Übernachtung Tag {nr}')}
-    meta = {"id": etappe["id"], "status": st, "von": etappe["von"], "nach": etappe["nach"], "bett": bett}
-    skripte = (
+    lodging = stage.get("lodging") or {}
+    marker = None
+    if lodging.get("lat") and lodging.get("lon"):
+        marker = {
+            "pos": [lodging["lat"], lodging["lon"]],
+            "html": f'<b>{lodging["name"]}</b>'
+                    + (f'{lodging.get("type", "")} · Übernachtung Tag {no}').strip(" ·"),
+        }
+    meta = {"id": stage["id"], "status": stage["status"],
+            "from": stage["from"], "to": stage["to"], "lodging": marker}
+    scripts = (
         '<script src="assets/vendor/leaflet/leaflet.js"></script>\n'
         '<script src="assets/js/format.js"></script>\n'
-        '<script src="assets/js/karte.js"></script>\n'
-        '<script src="assets/js/profil.js"></script>\n'
+        '<script src="assets/js/map.js"></script>\n'
+        '<script src="assets/js/profile.js"></script>\n'
         '<script src="assets/js/lightbox.js"></script>\n'
-        f'<script>window.RGA_TAG={json.dumps(meta, ensure_ascii=False)};</script>\n'
-        '<script src="assets/js/tag.js"></script>'
+        f'<script>window.RGA_STAGE={json.dumps(meta, ensure_ascii=False)};</script>\n'
+        '<script src="assets/js/day.js"></script>'
     )
-    beschreibung = (f'Tag {nr} von {len(etappen)} auf der Route des Grandes Alpes: '
-                    f'{etappen_name(etappe)}, {km(etappe["distanzKm"])} und {meter(etappe["aufstiegM"], "+")}'
-                    + (f' über {", ".join(p["name"] for p in etappe["paesse"])}.' if etappe["paesse"] else "."))
-    return rahmen(
-        reise, inhalt,
-        titel=f'Tag {nr}: {etappen_name(etappe)} — {reise["titel"]}',
-        og_titel=f'Tag {nr}: {etappen_name(etappe)}',
-        beschreibung=beschreibung,
-        css_extra='<link rel="stylesheet" href="assets/css/site.css">\n'
-                  '<link rel="stylesheet" href="assets/css/tag.css">\n'
-                  '<link rel="stylesheet" href="assets/vendor/leaflet/leaflet.css">',
-        skripte=skripte, aktiv="etappen",
+    description = (f'Tag {no} von {len(stages)} auf der Route des Grandes Alpes: '
+                   f'{stage_name(stage)}, {km(stage["distanceKm"])} und '
+                   f'{metres(stage["ascentM"], "+")}'
+                   + (f' über {", ".join(p["name"] for p in stage["passes"])}.'
+                      if stage["passes"] else "."))
+    return page(
+        trip, body,
+        title=f'Tag {no}: {stage_name(stage)} — {trip["title"]}',
+        og_title=f'Tag {no}: {stage_name(stage)}',
+        description=description,
+        extra_css=('<link rel="stylesheet" href="assets/css/site.css">\n'
+                   '<link rel="stylesheet" href="assets/css/day.css">\n'
+                   '<link rel="stylesheet" href="assets/vendor/leaflet/leaflet.css">'),
+        scripts=scripts, active="stages",
     )
 
 
-# --- Packliste -------------------------------------------------------------
+# --- packing list ----------------------------------------------------------
 
-def gruppen_anker(name):
-    tabelle = str.maketrans({"ä": "ae", "ö": "oe", "ü": "ue", "ß": "ss", " ": "-", "&": "und"})
-    return "gruppe-" + "".join(
-        c for c in name.lower().translate(tabelle) if c.isalnum() or c == "-").strip("-")
+def group_anchor(name):
+    table = str.maketrans({"ä": "ae", "ö": "oe", "ü": "ue", "ß": "ss", " ": "-", "&": "und"})
+    slug = "".join(c for c in name.lower().translate(table) if c.isalnum() or c == "-")
+    return "group-" + slug.strip("-")
 
 
-def seite_packliste(reise, pack):
-    gruppen_html, legende, verteilung = [], [], []
-    gepaeck = 0
-    summen = []
-    for i, g in enumerate(pack["gruppen"]):
-        farbe = GRUPPEN_FARBEN[i % len(GRUPPEN_FARBEN)]
-        summe = sum(p["anzahl"] * p["gramm"] for p in g["posten"])
-        summen.append((g, farbe, summe))
-        if not g.get("amKoerper"):
-            gepaeck += summe
+def render_packing_list(trip, stages, packing):
+    totals = []
+    luggage = 0
+    for i, group in enumerate(packing["groups"]):
+        colour = GROUP_COLOURS[i % len(GROUP_COLOURS)]
+        weight = sum(item["qty"] * item["grams"] for item in group["items"])
+        totals.append((group, colour, weight))
+        if not group.get("wornOnBody"):
+            luggage += weight
 
-    for g, farbe, summe in summen:
-        posten = []
-        for p in g["posten"]:
-            pid = f'{g["name"]}|{p["name"]}'
-            gesamt = p["anzahl"] * p["gramm"]
-            urteil = ""
-            if p.get("wiederMitnehmen") is True:
-                urteil = '<span class="pack-urteil ja">wieder dabei</span>'
-            elif p.get("wiederMitnehmen") is False:
-                urteil = '<span class="pack-urteil nein">bleibt daheim</span>'
-            anzahl = f'<span class="pack-anzahl">×{p["anzahl"]}</span>' if p["anzahl"] > 1 else ""
-            posten.append(
-                f'<li class="pack-zeile">'
-                f'<input type="checkbox" id="{e(pid)}" data-id="{e(pid)}" data-gramm="{gesamt}">'
-                f'<label for="{e(pid)}"><span class="pack-name">{e(p["name"])}</span>{anzahl}{urteil}</label>'
-                f'<span class="pack-gewicht">{gramm(gesamt)}</span>'
-                + (f'<p class="pack-notiz">{e(p["notiz"])}</p>' if p.get("notiz") else "")
+    groups_html, legend, split, jump = [], [], [], []
+    for group, colour, weight in totals:
+        rows = []
+        for item in group["items"]:
+            item_id = f'{group["name"]}|{item["name"]}'
+            total = item["qty"] * item["grams"]
+            verdict = ""
+            if item.get("takeAgain") is True:
+                verdict = '<span class="pack-verdict yes">wieder dabei</span>'
+            elif item.get("takeAgain") is False:
+                verdict = '<span class="pack-verdict no">bleibt daheim</span>'
+            qty = f'<span class="pack-qty">×{item["qty"]}</span>' if item["qty"] > 1 else ""
+            rows.append(
+                f'<li class="pack-row">'
+                f'<input type="checkbox" id="{e(item_id)}" data-id="{e(item_id)}" data-grams="{total}">'
+                f'<label for="{e(item_id)}"><span class="pack-name">{e(item["name"])}</span>'
+                f'{qty}{verdict}</label>'
+                f'<span class="pack-weight">{grams(total)}</span>'
+                + (f'<p class="pack-note">{e(item["note"])}</p>' if item.get("note") else "")
                 + '</li>')
-        gruppen_html.append(
-            f'<section class="pack-gruppe"><div class="pack-gruppe-kopf">'
-            f'<h3><i style="background:{farbe}"></i>{e(g["name"])}</h3>'
-            f'<span class="pack-gruppe-gewicht">{gramm(summe)} · {len(g["posten"])} Posten</span>'
-            + (f'<p class="pack-gruppe-note">{e(g["notiz"])}</p>' if g.get("notiz") else "")
-            + f'</div><ul class="pack-liste">{"".join(posten)}</ul></section>')
-        if not g.get("amKoerper"):
-            verteilung.append(f'<i style="background:{farbe}; width:{summe / gepaeck * 100:.2f}%" '
-                              f'title="{e(g["name"])}: {gramm(summe)}"></i>')
-            legende.append(f'<div><i style="background:{farbe}"></i>{e(g["name"])}<b>{gramm(summe)}</b></div>')
+        groups_html.append(
+            f'<section class="pack-group" id="{group_anchor(group["name"])}">'
+            f'<div class="pack-group-head">'
+            f'<h3><i style="background:{colour}"></i>{e(group["name"])}</h3>'
+            f'<span class="pack-group-weight">{grams(weight)} · {len(group["items"])} Posten</span>'
+            + (f'<p class="pack-group-note">{e(group["note"])}</p>' if group.get("note") else "")
+            + f'</div><ul class="pack-list">{"".join(rows)}</ul></section>')
+        jump.append(f'<a href="#{group_anchor(group["name"])}">{e(group["name"])}'
+                    f'<b>{grams(weight)}</b></a>')
+        if not group.get("wornOnBody"):
+            split.append(f'<i style="background:{colour}; width:{weight / luggage * 100:.2f}%"'
+                         f' title="{e(group["name"])}: {grams(weight)}"></i>')
+            legend.append(f'<div><i style="background:{colour}"></i>{e(group["name"])}'
+                          f'<b>{grams(weight)}</b></div>')
 
-    am_koerper = sum(s for g, _, s in summen if g.get("amKoerper"))
-    leer = pack.get("leergewichte") or []
-    note_teile = [f'in {len([g for g, _, _ in summen if not g.get("amKoerper")])} Gruppen, ohne Rad']
-    if am_koerper:
-        note_teile.append(f'am Körper zusätzlich {gramm(am_koerper)}')
-    for l in leer:
-        note_teile.append(f'{l["name"]}: {gramm(l["gramm"])}')
+    worn = sum(w for group, _, w in totals if group.get("wornOnBody"))
+    luggage_groups = len([g for g, _, _ in totals if not g.get("wornOnBody")])
+    note = [f"in {luggage_groups} Gruppen, ohne Rad"]
+    if worn:
+        note.append(f"am Körper zusätzlich {grams(worn)}")
+    for base in packing.get("baseWeights") or []:
+        note.append(f'{base["name"]}: {grams(base["grams"])}')
 
-    sprung = "".join(
-        f'<a class="pack-sprung" href="#{gruppen_anker(g["name"])}">{e(g["name"])}'
-        f'<b>{gramm(summe)}</b></a>'
-        for g, _, summe in summen)
-
-    wert = gramm(gepaeck).split(" ")
-    inhalt = fuellen((TEMPLATES / "packliste.html").read_text(encoding="utf-8"), {
-        "eyebrow": f'{e(reise["start"])} → {e(reise["ziel"])} · {e(zeitraum(reise["von"], reise["bis"]))}',
-        "einleitung": e(pack.get("einleitung", "")),
-        "gesamt": wert[0],
-        "gesamt_einheit": wert[1],
-        "gesamt_note": e(" · ".join(note_teile)),
-        "verteilung": "".join(verteilung),
-        "verteilung_legende": "".join(legende),
-        "sprungliste": sprung,
-        "gruppen": "".join(gruppen_html),
+    value, unit = grams(luggage).split(" ")
+    body = fill((TEMPLATES / "packing-list.html").read_text(encoding="utf-8"), {
+        "eyebrow": (f'{e(stages[0]["from"])} → {e(stages[-1]["to"])} · '
+                    f'{e(date_range(stages[0]["date"], stages[-1]["date"]))}'),
+        "intro": e(packing.get("intro", "")),
+        "total": value,
+        "total_unit": unit,
+        "total_note": e(" · ".join(note)),
+        "split": "".join(split),
+        "split_legend": "".join(legend),
+        "jump_links": "".join(jump),
+        "groups": "".join(groups_html),
     })
-    pruefen_vollstaendig("packliste.html", inhalt)
-    return rahmen(
-        reise, inhalt,
-        titel=f'Packliste — {reise["titel"]}',
-        beschreibung=(f'Was auf {km(sum(x["distanzKm"] for x in reise["etappen"]))} von '
-                      f'{reise["start"]} nach {reise["ziel"]} mitfuhr: {gramm(gepaeck)} Gepäck '
-                      f'in {len(pack["gruppen"])} Gruppen, mit Gewichten und Fazit.'),
-        css_extra='<link rel="stylesheet" href="assets/css/site.css">',
-        skripte='<script src="assets/js/format.js"></script>\n'
-                '<script src="assets/js/packliste.js"></script>',
-        aktiv="packliste",
+    assert_filled("packing-list.html", body)
+    return page(
+        trip, body,
+        title=f'Packliste — {trip["title"]}',
+        description=(f'Was auf {km(sum(s["distanceKm"] for s in stages))} von {stages[0]["from"]} '
+                     f'nach {stages[-1]["to"]} mitfuhr: {grams(luggage)} Gepäck in '
+                     f'{len(packing["groups"])} Gruppen, mit Gewichten und Fazit.'),
+        extra_css='<link rel="stylesheet" href="assets/css/site.css">',
+        scripts=('<script src="assets/js/format.js"></script>\n'
+                 '<script src="assets/js/packing-list.js"></script>'),
+        active="packing",
     )
 
 
-# --- Hauptlauf -------------------------------------------------------------
+# --- main ------------------------------------------------------------------
 
 def main():
-    ap = argparse.ArgumentParser(description="Erzeugt die HTML-Seiten aus templates/ und data/.")
-    ap.add_argument("--check", action="store_true",
-                    help="nichts schreiben, nur melden, welche Seiten veraltet sind")
-    ap.add_argument("--heute", metavar="JJJJ-MM-TT",
-                    help="Stichtag für gefahren/heute/geplant (Vorgabe: heute)")
-    args = ap.parse_args()
-    heute = date.fromisoformat(args.heute) if args.heute else date.today()
+    parser = argparse.ArgumentParser(description="Build the site from gpx/ and data/.")
+    parser.add_argument("--check", action="store_true",
+                        help="write nothing, just report which files are out of date")
+    parser.add_argument("--today", metavar="YYYY-MM-DD",
+                        help="date used for ridden/today/planned (default: today)")
+    parser.add_argument("--smoothing", type=int, default=gpx.SMOOTHING_WINDOW, metavar="N",
+                        help=f"average elevation over N points (default {gpx.SMOOTHING_WINDOW}, 0 or 1 = off)")
+    args = parser.parse_args()
+    today = date.fromisoformat(args.today) if args.today else date.today()
 
-    reise = json.loads((DATA / "reise.json").read_text(encoding="utf-8"))
-    pack = json.loads((DATA / "packliste.json").read_text(encoding="utf-8"))
-    etappen = reise["etappen"]
-    if [x["nr"] for x in etappen] != list(range(1, len(etappen) + 1)):
-        sys.exit("reise.json: 'nr' muss von 1 an lückenlos aufsteigen")
+    trip, stages, tracks = load_stages(today, args.smoothing)
+    packing = json.loads((DATA / "packing-list.json").read_text(encoding="utf-8"))
 
-    seiten = {
-        "index.html": seite_start(reise, heute),
-        "etappen.html": seite_etappen(reise, heute),
-        "packliste.html": seite_packliste(reise, pack),
+    files = {
+        "index.html": render_home(trip, stages),
+        "stages.html": render_stages(trip, stages),
+        "packing-list.html": render_packing_list(trip, stages, packing),
     }
-    for etappe in etappen:
-        seiten[f'{etappe["id"]}.html'] = seite_tag(reise, etappe, heute)
+    for stage in stages:
+        files[f'{stage["id"]}.html'] = render_day(trip, stage, stages)
 
-    veraltet = []
-    for name, text in sorted(seiten.items()):
-        ziel = ROOT / name
-        alt = ziel.read_text(encoding="utf-8") if ziel.exists() else None
-        if alt == text:
+    for sid, track in tracks.items():
+        files[f"data/tracks/{sid}.json"] = json.dumps(
+            track, ensure_ascii=False, separators=(",", ":")) + "\n"
+    files["data/overview.json"] = json.dumps(
+        [{"id": s["id"], "no": s["no"],
+          "points": [[round(p["lat"], 5), round(p["lon"], 5)]
+                     for p in gpx.every_nth(s["points"], gpx.MAX_OVERVIEW_POINTS)]}
+         for s in stages],
+        ensure_ascii=False, separators=(",", ":")) + "\n"
+
+    stale = []
+    for name, text in sorted(files.items()):
+        target = ROOT / name
+        existing = target.read_text(encoding="utf-8") if target.exists() else None
+        if existing == text:
             continue
-        veraltet.append(name)
+        stale.append(name)
         if not args.check:
-            ziel.write_text(text, encoding="utf-8")
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_text(text, encoding="utf-8")
 
     if args.check:
-        if veraltet:
-            print("Nicht aktuell: " + ", ".join(veraltet))
+        if stale:
+            print("Out of date: " + ", ".join(stale))
             sys.exit(1)
-        print(f"Alle {len(seiten)} Seiten sind aktuell (Stichtag {heute.isoformat()}).")
+        print(f"All {len(files)} files are up to date (as of {today.isoformat()}).")
         return
 
-    print(f"{len(seiten)} Seiten geprüft, {len(veraltet)} geschrieben (Stichtag {heute.isoformat()}):")
-    for name in veraltet:
-        print(f'  {name}  {(ROOT / name).stat().st_size / 1024:.0f} KB')
+    total_km = sum(s["distanceKm"] for s in stages)
+    print(f'{len(stages)} stages, {total_km:.0f} km, '
+          f'{sum(s["rawPoints"] for s in stages)} GPX points read')
+    print(f"{len(files)} files checked, {len(stale)} written (as of {today.isoformat()})")
+    for name in stale:
+        print(f"  {name}  {(ROOT / name).stat().st_size / 1024:.0f} KB")
 
 
 if __name__ == "__main__":
