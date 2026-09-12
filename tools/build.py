@@ -678,8 +678,8 @@ def main():
                         help="write nothing, just report which files are out of date")
     parser.add_argument("--today", metavar="YYYY-MM-DD",
                         help="date used for ridden/today/planned (default: today)")
-    parser.add_argument("--smoothing", type=int, default=gpx.SMOOTHING_WINDOW, metavar="N",
-                        help=f"average elevation over N points (default {gpx.SMOOTHING_WINDOW}, 0 or 1 = off)")
+    parser.add_argument("--smoothing", type=int, default=gpx.SMOOTHING_WINDOW_M, metavar="METRES",
+                        help=f"average elevation over a window of METRES (default {gpx.SMOOTHING_WINDOW_M}, 0 = off)")
     args = parser.parse_args()
     today = date.fromisoformat(args.today) if args.today else date.today()
 
@@ -731,4 +731,8 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except BrokenPipeError:
+        # Piping into head/less closes stdout early; that is not an error.
+        sys.stdout = None

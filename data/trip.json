@@ -340,8 +340,26 @@
         "Col de la Cayolle",
         "Col de Valberg"
       ],
-      "passes": [],
-      "strava": [],
+      "passes": [
+        {
+          "name": "Col de la Cayolle",
+          "eleM": 2326,
+          "url": null,
+          "manual": false
+        },
+        {
+          "name": "Col de Valberg",
+          "eleM": 1673,
+          "url": null,
+          "manual": false
+        }
+      ],
+      "strava": [
+        {
+          "id": "20119787690",
+          "name": "RGA Tag 12"
+        }
+      ],
       "lodging": null,
       "summary": [],
       "photos": []
@@ -356,8 +374,26 @@
       "plannedPasses": [
         "Col Saint-Martin"
       ],
-      "passes": [],
-      "strava": [],
+      "passes": [
+        {
+          "name": "Col de la Sinne",
+          "eleM": 1438,
+          "url": null,
+          "manual": false
+        },
+        {
+          "name": "Col Saint-Martin",
+          "eleM": 1500,
+          "url": null,
+          "manual": false
+        }
+      ],
+      "strava": [
+        {
+          "id": "20131864425",
+          "name": "RGA Tag 13"
+        }
+      ],
       "lodging": null,
       "summary": [],
       "photos": []

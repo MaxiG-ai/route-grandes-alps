@@ -12,7 +12,7 @@ MIN_POINT_SPACING_M = 12    # points closer than this are dropped from the outpu
 MAX_TRACK_POINTS = 1200     # hard cap per stage, keeps the JSON small
 MAX_OVERVIEW_POINTS = 90    # per stage, for the map on the landing page
 PROFILE_SAMPLES = 48        # per stage, for the sparklines
-SMOOTHING_WINDOW = 5        # moving average over elevation, in points
+SMOOTHING_WINDOW_M = 60     # moving average over elevation, in metres of track
 CLIMB_THRESHOLD_M = 1.0     # ignore elevation wobble below this
 
 
@@ -93,15 +93,35 @@ def read(path):
     return points, waypoints
 
 
-def smooth_elevation(points, window=SMOOTHING_WINDOW):
-    """Moving average over elevation. Raw GPS elevation is noisy enough to
-    invent a few hundred metres of climbing over a long stage."""
-    if window <= 1 or len(points) < window:
-        return [p["ele"] for p in points]
+def smooth_elevation(points, window_m=SMOOTHING_WINDOW_M):
+    """Moving average over elevation, across a window measured in metres.
+
+    Raw GPS elevation is noisy enough to invent a few hundred metres of
+    climbing over a long stage. The window is in metres rather than points
+    because files differ wildly in sampling: a recorded ride can hold a
+    point every few metres, a resampled export one every eighty. A fixed
+    point count would barely touch the first and flatten real climbs in
+    the second.
+    """
     eles = [p["ele"] for p in points]
-    half = window // 2
+    if window_m <= 0 or len(points) < 3:
+        return eles
+
+    spacing = median_spacing_m(points)
+    half = int(round((window_m / max(spacing, 1.0)) / 2))
+    if half < 1:
+        return eles
     return [sum(eles[max(0, i - half):i + half + 1]) / len(eles[max(0, i - half):i + half + 1])
             for i in range(len(eles))]
+
+
+def median_spacing_m(points):
+    """Typical distance between neighbouring points, in metres."""
+    gaps = sorted(distance_km((a["lat"], a["lon"]), (b["lat"], b["lon"])) * 1000
+                  for a, b in zip(points, points[1:]))
+    if not gaps:
+        return 1.0
+    return max(gaps[len(gaps) // 2], 0.5)
 
 
 def climb(eles, threshold=CLIMB_THRESHOLD_M):
@@ -156,7 +176,7 @@ def profile_samples(points, count=PROFILE_SAMPLES):
     return values
 
 
-def parse(path, smoothing=SMOOTHING_WINDOW):
+def parse(path, smoothing=SMOOTHING_WINDOW_M):
     """Full pipeline for one stage.
 
     Returns a dict with the numbers for the page plus the thinned geometry
@@ -164,7 +184,7 @@ def parse(path, smoothing=SMOOTHING_WINDOW):
     full-resolution track, so thinning does not eat away at them.
     """
     raw, waypoints = read(path)
-    eles = smooth_elevation(raw, smoothing)
+    eles = smooth_elevation(raw, window_m=smoothing)
     for p, ele in zip(raw, eles):
         p["ele"] = round(ele, 1)
 
@@ -190,6 +210,7 @@ def parse(path, smoothing=SMOOTHING_WINDOW):
     all_ele = [p["ele"] for p in raw]
     return {
         "rawPoints": len(raw),
+        "spacingM": round(median_spacing_m(raw), 1),
         "points": [{"lat": round(p["lat"], 5), "lon": round(p["lon"], 5),
                     "ele": p["ele"], "d": p["d"]} for p in points],
         "waypoints": waypoints,
