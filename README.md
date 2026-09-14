@@ -1,4 +1,4 @@
-# Rhein bis Riviera
+# Karlsruhe to Liguria
 
 Website for a bikepacking trip along the Route des Grandes Alpes:
 Karlsruhe → Isolabona, 14 stages, 30 August – 12 September 2026.
