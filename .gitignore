@@ -216,3 +216,7 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Photos: keep the originals outside the repository
+photos/_original/
+photos/**/*.HEIC
