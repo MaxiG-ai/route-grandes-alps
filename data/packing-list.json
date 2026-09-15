@@ -59,22 +59,9 @@
         {
           "name": "Packsack Rackträger, wasserdicht",
           "qty": 1,
-          "grams": 90,
+          "grams": 150,
           "note": "Gewicht geschätzt. Oben auf dem Gepäckträger verzurrt, für Zelt, Heringe und Zeltunterlage.",
           "takeAgain": true
-        },
-        {
-          "name": "Schmutzwäsche-Packsack, ~10 l, auffällige Farbe",
-          "qty": 1,
-          "grams": 90,
-          "note": "Gewicht geschätzt. Lebt in der linken Gepäckträgertasche, nur für getragene Kleidung — nie zusammen mit frischer Wäsche im gleichen Fach. Kleiner Zip-Beutel darin für einen nassen Sitzpolster.",
-          "takeAgain": true
-        },
-        {
-          "name": "Karabiner für Slip-Ons",
-          "qty": 1,
-          "grams": 10,
-          "note": "Gewicht geschätzt. Am Rackträger-Packsack, für Slip-Ons und trocknende Wäsche."
         }
       ]
     },
@@ -105,8 +92,8 @@
           "name": "Kopfkissen aufblasbar",
           "qty": 1,
           "grams": 75,
-          "note": "Auf der RGA-Tour nicht mitgenommen — Kissenersatz war der Packsack mit der Daunenjacke drin.",
-          "takeAgain": false
+          "note": "Fürs nächste Mal Upgrade: Aufblasbar mit Tasche für Jacke",
+          "takeAgain": true
         },
         {
           "name": "Biwaksack / Notunterkunft",
@@ -479,35 +466,11 @@
           "note": "Inkl. ein längeres USB-C-Kabel."
         },
         {
-          "name": "Steckdosenadapter international",
-          "qty": 1,
-          "grams": 60,
-          "note": "Gewicht geschätzt. FR/DE passen mit EU-Stecker, CH braucht einen eigenen Adapter — für die Übernachtungen im Jura gebraucht."
-        },
-        {
-          "name": "Frontlicht",
-          "qty": 1,
-          "grams": 120,
-          "takeAgain": true
-        },
-        {
-          "name": "Rücklicht",
-          "qty": 1,
-          "grams": 45,
-          "takeAgain": true
-        },
-        {
           "name": "Stirnlampe",
           "qty": 1,
           "grams": 55,
           "note": "Für das Zelt unverzichtbar.",
           "takeAgain": true
-        },
-        {
-          "name": "Kamera kompakt",
-          "qty": 1,
-          "grams": 320,
-          "takeAgain": null
         },
         {
           "name": "Shokz Kopfhörer + Ladekabel",
@@ -546,14 +509,18 @@
         {
           "name": "Handtuch Mikrofaser",
           "qty": 1,
-          "grams": 120,
-          "note": "Hängt bei Ankunft im Camp zum Trocknen an die Wäscheleine."
+          "grams": 120
         },
         {
-          "name": "Duschgel / Waschmittel",
+          "name": "Duschgel",
           "qty": 1,
           "grams": 100,
-          "note": "Ein Fläschchen für beides. Alternativ Waschmittel-Blätter fürs Handwaschen.",
+          "takeAgain": true
+        },
+        {
+          "name": "Waschmittel",
+          "qty": 1,
+          "grams": 100,
           "takeAgain": true
         },
         {
@@ -572,8 +539,8 @@
         {
           "name": "Sitzcreme",
           "qty": 1,
-          "grams": 75,
-          "note": "Reicht für 14 Tage nicht knapp kalkulieren.",
+          "grams": 150,
+          "note": "Sollte für 14 Tage reichen, nicht knapp kalkulieren.",
           "takeAgain": true
         },
         {
@@ -590,14 +557,9 @@
           "takeAgain": true
         },
         {
-          "name": "Schmerztabletten",
-          "qty": 1,
-          "grams": 20
-        },
-        {
           "name": "Ohrstöpsel (Wachs)",
           "qty": 1,
-          "grams": 5,
+          "grams": 15,
           "note": "Auf Campingplätzen unbezahlbar.",
           "takeAgain": true
         },
@@ -606,34 +568,28 @@
           "qty": 1,
           "grams": 60,
           "note": "Gewicht geschätzt. Auf der RGA-Tour gefehlt — unterwegs als Lücke aufgefallen, nicht dabei gehabt.",
-          "takeAgain": null
+          "takeAgain": true
         },
         {
           "name": "Waschbecken-Stöpsel",
           "qty": 1,
           "grams": 10,
           "note": "Gewicht geschätzt. Auf der RGA-Tour gefehlt — für Handwäsche im Waschbecken hätte er gefehlt.",
-          "takeAgain": null
+          "takeAgain": true
         },
         {
           "name": "Zipperbeutel, verschiedene Größen",
           "qty": 1,
           "grams": 20,
           "note": "Gewicht geschätzt. Auf der RGA-Tour zu wenige dabei gehabt, u. a. für den nassen Sitzpolster in der Schmutzwäsche-Tasche.",
-          "takeAgain": null
+          "takeAgain": true
         },
         {
           "name": "Haushaltsgummis",
           "qty": 1,
           "grams": 10,
           "note": "Gewicht geschätzt. Auf der RGA-Tour zu wenige dabei gehabt.",
-          "takeAgain": null
-        },
-        {
-          "name": "Wäscheklammern",
-          "qty": 4,
-          "grams": 5,
-          "note": "Gewicht geschätzt."
+          "takeAgain": true
         },
         {
           "name": "Wäscheleine (Bungee mit Haken)",
