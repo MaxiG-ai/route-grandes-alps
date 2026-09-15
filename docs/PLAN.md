@@ -93,7 +93,7 @@ build output and can be deleted at any time.
 
 ```json
 {
-  "title": "Rhein bis Riviera",
+  "title": "Von Karlsruhe nach Ligurien",
   "stravaProfile": "https://www.strava.com/athletes/11965636",
   "stages": [{
     "id": "day-07",
@@ -153,28 +153,25 @@ Left to JavaScript: the Leaflet map, the elevation profile (which fetches
 
 The generator is idempotent and writes only what changed. `--check`
 compares without writing and fails if a committed file is out of date
-(`tools/upload.sh` calls it before uploading). `--today YYYY-MM-DD` pins
-the ridden/planned date, `--smoothing N` tunes the elevation filter.
+(`tools/upload.sh` calls it before uploading). `--smoothing N` tunes the
+elevation filter.
 
-There is no separate "today" state: a stage is either ridden (its date has
-passed) or planned. The trip is a fixed itinerary, not a live tracker, so
-there is nothing meaningfully different about the one day a stage happens
-to match `--today` — and a three-way split invited a stage to be counted
-as both "ridden so far" and "still to come" at once, which is exactly what
-happened before this was simplified.
-
-One consequence of pre-computing: the trip state freezes at build time.
-Rebuild before uploading — noted in the README.
+While the trip was still ahead of the calendar, a stage was either ridden
+(its date had passed) or planned, worked out at build time from `--today`
+or the current date, with progress bars and "planned" badges throughout the
+site. That distinction is gone now that the trip is over and its dates are
+fixed: every stage is simply done, so there is nothing left to compute from
+"today", and `--today` was removed along with the ridden/planned code paths
+in the generator, templates, CSS and JS.
 
 ## 4. The pages
 
 ### `index.html`
 
 Hero with title, route, dates and a cover image. Figures from the parsed
-tracks: total distance, climbing, passes, kilometres ridden, progress bar
-(the prototype's date logic, now evaluated in Python). Overview map of all
-stages from `overview.json`, click a line to open that stage. Three entry
-cards, then the full stage table.
+tracks: total distance, climbing, passes. Overview map of all stages from
+`overview.json`, click a line to open that stage. Three entry cards, then
+the full stage table.
 
 ### `stages.html`
 

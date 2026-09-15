@@ -117,19 +117,9 @@ button{ font-family:inherit; color:inherit; }
 .value-up{ color:var(--blue-deep); }
 .value-down{ color:var(--red-deep); }
 
-/* --- status: ridden / planned --------------------------------------------- */
-.status{
-  display:inline-flex; align-items:center; gap:5px; font-size:11px; font-weight:700;
-  letter-spacing:.05em; text-transform:uppercase; padding:2px 8px; border-radius:999px;
-}
-.status::before{ content:""; width:6px; height:6px; border-radius:50%; background:currentColor; }
-.status-ridden{ background:var(--blue-pale); color:var(--blue-deep); }
-.status-planned{ background:var(--paper-deep); color:var(--ink-soft); }
-
 /* --- progress ------------------------------------------------------------ */
 .progress{ height:6px; border-radius:3px; background:var(--paper-deep); overflow:hidden; }
 .progress i{ display:block; height:100%; background:var(--blue); border-radius:3px; }
-.progress-note{ margin:7px 0 0; font-size:12px; color:var(--ink-faint); }
 
 /* --- chips: passes, Strava ----------------------------------------------- */
 .chips{ display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
