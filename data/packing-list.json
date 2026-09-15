@@ -20,38 +20,48 @@
           "name": "Gepäckträgertasche 24 l",
           "qty": 2,
           "grams": 990,
-          "note":"Könnte sein, dass die nicht wirklich gleich schwer sind.",
+          "note": "Könnte sein, dass die nicht wirklich gleich schwer sind. Decathlon ADVT 900, zusammen max. 15 kg. Rechts = Ops-Seite (Essen, Elektronik, Dokumente, Regenjacke oben), links = schmutzige & nasse Seite (Wäschesack, Reserve-Trinkflasche unten).",
           "takeAgain": true
         },
         {
-          "name": "Tailfin Half Frame Bag 3 l with Straps",
+          "name": "Tailfin Wedge Half Frame Bag 3.5 l with Straps",
           "qty": 1,
           "grams": 290,
+          "note": "Rahmentasche für Werkzeug & Ersatzteile (dicht gepackt, tief im Rahmen) sowie Erste-Hilfe-Set, Arm- und Beinlinge.",
           "takeAgain": true
         },
         {
           "name": "Tailfin Top Tube Bag 1.1l strap-mount",
           "qty": 1,
           "grams": 150,
-          "note": "Riegel und Powerbank in Reichweite.",
+          "note": "Riegel und Powerbank in Reichweite. Außerdem Handy im Quad-Lock-Case, Lippenpflege mit LSF, Sonnencreme-Mini und Tagesbargeld.",
           "takeAgain": true
         },
         {
           "name": "Gabeltasche ADVT 900",
           "qty": 2,
           "grams": 240,
-          "note":"Gewicht geschätzt",
+          "note": "Gewicht geschätzt. Ziel unter 2 kg pro Seite (Käfig-Limit 3 kg). Rechts = frische Wäsche fürs nächste Etappe + Camp-Set B, links = Toilettenartikel, warme Jacke, trockenes Handtuch.",
           "takeAgain": true
         },
         {
           "name": "Cube ACID Fork Racks",
           "qty": 2,
-          "grams": 89
+          "grams": 89,
+          "note": "Schrauben lockern sich unterwegs — Ersatzschrauben und Spanngurte einplanen."
         },
         {
           "name": "Voilé Spanngurte",
           "qty": 2,
-          "grams": 30
+          "grams": 30,
+          "note": "Auch als Ersatz griffbereit, falls sich Gabeltaschen-Schrauben lösen."
+        },
+        {
+          "name": "Packsack Rackträger, wasserdicht",
+          "qty": 1,
+          "grams": 90,
+          "note": "Gewicht geschätzt. Oben auf dem Gepäckträger verzurrt, für Zelt, Heringe und Zeltunterlage.",
+          "takeAgain": true
         }
       ]
     },
@@ -75,18 +85,28 @@
           "name": "Isomatte aufblasbar",
           "qty": 1,
           "grams": 460,
+          "note": "Packmaß 30×7 cm Zylinder.",
           "takeAgain": true
         },
         {
           "name": "Kopfkissen aufblasbar",
           "qty": 1,
-          "grams": 75
+          "grams": 75,
+          "note": "Für die nächste Tour ersetzt durch Packsack + Daunenjacke als Kissen — spart Gewicht.",
+          "takeAgain": false
         },
         {
           "name": "Biwaksack / Notunterkunft",
           "qty": 1,
           "grams": 180,
           "note": "Nie gebraucht, bleibt trotzdem dabei.",
+          "takeAgain": true
+        },
+        {
+          "name": "Schlafmaske",
+          "qty": 1,
+          "grams": 20,
+          "note": "Gewicht geschätzt.",
           "takeAgain": true
         }
       ]
@@ -105,6 +125,12 @@
           "name": "Trikot kurzarm",
           "qty": 1,
           "grams": 140
+        },
+        {
+          "name": "Funktionsunterhemd",
+          "qty": 1,
+          "grams": 90,
+          "note": "Gewicht geschätzt."
         },
         {
           "name": "Radsocken",
@@ -150,6 +176,12 @@
           "takeAgain": true
         },
         {
+          "name": "Funktionsunterhemd (Wechsel)",
+          "qty": 1,
+          "grams": 90,
+          "note": "Gewicht geschätzt."
+        },
+        {
           "name": "Radsocken (Wechsel)",
           "qty": 2,
           "grams": 60
@@ -158,6 +190,7 @@
           "name": "Regenjacke",
           "qty": 1,
           "grams": 230,
+          "note": "Kritisch bei Nachmittagsgewittern in den Alpen — oben in der rechten Gepäckträgertasche, immer ohne Auspacken erreichbar.",
           "takeAgain": true
         },
         {
@@ -170,31 +203,48 @@
         {
           "name": "Armlinge",
           "qty": 1,
-          "grams": 70
+          "grams": 70,
+          "note": "Wird für beide Trikots geteilt."
         },
         {
           "name": "Beinlinge",
           "qty": 1,
-          "grams": 120
+          "grams": 120,
+          "note": "Wird für beide Trikots geteilt."
         },
         {
           "name": "Langfingerhandschuhe",
           "qty": 1,
-          "grams": 70
+          "grams": 70,
+          "note": "Für kalte Abfahrten oberhalb 2.000 m."
         },
         {
           "name": "Merino-Longsleeve (Abend)",
           "qty": 1,
-          "grams": 190
+          "grams": 190,
+          "note": "Camp-Basisschicht, auch als Kälteschutz nachts."
+        },
+        {
+          "name": "Merino-Shirt kurzarm (Camp)",
+          "qty": 1,
+          "grams": 130,
+          "note": "Gewicht geschätzt."
         },
         {
           "name": "Kurze Hose (Abend)",
           "qty": 1,
-          "grams": 170
+          "grams": 170,
+          "note": "Schwimmtaugliches Modell wählen — deckt die Badehose-Funktion mit ab."
+        },
+        {
+          "name": "Lange Hose (Camp, schnelltrocknend)",
+          "qty": 1,
+          "grams": 210,
+          "note": "Gewicht geschätzt. Jogger oder leichte Wanderhose fürs Camp."
         },
         {
           "name": "Unterwäsche",
-          "qty": 2,
+          "qty": 3,
           "grams": 45
         },
         {
@@ -208,17 +258,39 @@
           "name": "Sandalen / Camp-Schuhe",
           "qty": 1,
           "grams": 320,
+          "note": "VivoBarefoot Slip-On.",
           "takeAgain": true
         },
         {
           "name": "Buff",
+          "qty": 2,
+          "grams": 30,
+          "note": "Zwei Stück: eines als Reserve zum Wechseln."
+        },
+        {
+          "name": "Leichte Beanie",
           "qty": 1,
-          "grams": 30
+          "grams": 45,
+          "note": "Gewicht geschätzt."
+        },
+        {
+          "name": "Camp-Socken (Wolle)",
+          "qty": 1,
+          "grams": 70,
+          "note": "Gewicht geschätzt. Dicker als die Radsocken, nur für abends."
         },
         {
           "name": "Daunenjacke leicht",
           "qty": 1,
           "grams": 290,
+          "note": "Eigentlich synthetisches Puffy (Norway), keine Daune — die wärmere, statische Jacke.",
+          "takeAgain": true
+        },
+        {
+          "name": "Patagonia Nano Air",
+          "qty": 1,
+          "grams": 260,
+          "note": "Gewicht geschätzt. Zweite, aktivere Isolationsschicht zusätzlich zur Norway-Puffy.",
           "takeAgain": true
         }
       ]
@@ -237,6 +309,7 @@
           "name": "Minipumpe",
           "qty": 1,
           "grams": 110,
+          "note": "Mit Druckmesser, wenn möglich am Rahmen montiert, sonst in der Rahmentasche.",
           "takeAgain": true
         },
         {
@@ -259,7 +332,7 @@
           "name": "Ersatzschaltauge",
           "qty": 1,
           "grams": 25,
-          "note": "Passend zum Rahmen, wiegt nichts.",
+          "note": "Passend zum Rahmen, wiegt nichts. Cube-Nuroad-spezifisches Teil — vor Abfahrt besorgen.",
           "takeAgain": true
         },
         {
@@ -283,6 +356,18 @@
           "name": "Kabelbinder & Panzertape",
           "qty": 1,
           "grams": 35
+        },
+        {
+          "name": "Nitrilhandschuhe",
+          "qty": 2,
+          "grams": 10,
+          "note": "Gewicht geschätzt. Für Reparaturen unterwegs."
+        },
+        {
+          "name": "Ersatzschrauben Gepäckträger/Käfig",
+          "qty": 1,
+          "grams": 15,
+          "note": "Gewicht geschätzt. Käfig- und Rack-Hardware löst sich unterwegs."
         }
       ]
     },
@@ -294,24 +379,33 @@
           "name": "Gaskocher",
           "qty": 1,
           "grams": 105,
-          "takeAgain": null
+          "note": "Strategie für die nächste Tour: kein Kochen mehr, Dorf-Versorgung reicht (1–2 Einkaufsstopps pro Tag).",
+          "takeAgain": false
         },
         {
           "name": "Gaskartusche 100 g",
           "qty": 1,
           "grams": 190,
-          "takeAgain": null
+          "note": "Entfällt ohne Kocher.",
+          "takeAgain": false
         },
         {
           "name": "Topf 700 ml",
           "qty": 1,
           "grams": 145,
-          "takeAgain": null
+          "note": "Entfällt ohne Kocher.",
+          "takeAgain": false
         },
         {
           "name": "Löffel",
           "qty": 1,
           "grams": 15
+        },
+        {
+          "name": "Teller",
+          "qty": 1,
+          "grams": 40,
+          "note": "Gewicht geschätzt. Leichter Camping-Teller für Dorf-Käse-und-Brot-Stops."
         },
         {
           "name": "Taschenmesser",
@@ -321,12 +415,21 @@
         {
           "name": "Trinkflasche 750 ml",
           "qty": 2,
-          "grams": 95
+          "grams": 95,
+          "note": "In der Praxis eine 1 l (Unterrohr, Wasser) und eine 0,75 l (Sattelrohr, Elektrolyt) — 1,75 l am Rad."
+        },
+        {
+          "name": "Reserve-Trinkflasche PET 1,5 l",
+          "qty": 1,
+          "grams": 35,
+          "note": "Gewicht geschätzt (leer). Nur an Tagen mit langen Anstiegen ohne Versorgung, z. B. Jausiers → Bonette (~24 km ohne Einkehr), unten in der linken Gepäckträgertasche.",
+          "takeAgain": null
         },
         {
           "name": "Notverpflegung (Riegel)",
           "qty": 4,
-          "grams": 60
+          "grams": 60,
+          "note": "Zielwert insgesamt 2.000–2.500 kcal Reserve."
         }
       ]
     },
@@ -359,7 +462,14 @@
         {
           "name": "Ladekabel",
           "qty": 3,
-          "grams": 25
+          "grams": 25,
+          "note": "Inkl. ein längeres USB-C-Kabel."
+        },
+        {
+          "name": "Steckdosenadapter international",
+          "qty": 1,
+          "grams": 60,
+          "note": "Gewicht geschätzt. FR/DE passen mit EU-Stecker, CH braucht einen eigenen Adapter — für die Jura-Nächte einpacken."
         },
         {
           "name": "Frontlicht",
@@ -385,6 +495,30 @@
           "qty": 1,
           "grams": 320,
           "takeAgain": null
+        },
+        {
+          "name": "Shokz Kopfhörer + Ladekabel",
+          "qty": 1,
+          "grams": 35,
+          "note": "Gewicht geschätzt."
+        },
+        {
+          "name": "Rasierer + Ladekabel",
+          "qty": 1,
+          "grams": 90,
+          "note": "Gewicht geschätzt."
+        },
+        {
+          "name": "Assioma Ladekabel (Powermeter-Pedale)",
+          "qty": 1,
+          "grams": 15,
+          "note": "Gewicht geschätzt."
+        },
+        {
+          "name": "Polar OH1 Pulssensor + Ladegerät",
+          "qty": 1,
+          "grams": 40,
+          "note": "Gewicht geschätzt."
         }
       ]
     },
@@ -399,31 +533,47 @@
         {
           "name": "Handtuch Mikrofaser",
           "qty": 1,
-          "grams": 120
+          "grams": 120,
+          "note": "Hängt bei Ankunft im Camp zum Trocknen an die Wäscheleine."
         },
         {
           "name": "Duschgel / Waschmittel",
           "qty": 1,
           "grams": 100,
-          "note": "Ein Fläschchen für beides.",
+          "note": "Ein Fläschchen für beides. Alternativ Waschmittel-Blätter fürs Handwaschen.",
           "takeAgain": true
         },
         {
           "name": "Sonnencreme LSF 50",
           "qty": 1,
           "grams": 100,
+          "note": "Zusätzlich Mini-Dekant für die Lenkertasche.",
           "takeAgain": true
+        },
+        {
+          "name": "Lippenpflege mit LSF",
+          "qty": 1,
+          "grams": 10,
+          "note": "Gewicht geschätzt. Lenkertasche."
         },
         {
           "name": "Sitzcreme",
           "qty": 1,
           "grams": 75,
+          "note": "Reicht für 14 Tage nicht knapp kalkulieren.",
           "takeAgain": true
+        },
+        {
+          "name": "Handdesinfektionsmittel",
+          "qty": 1,
+          "grams": 30,
+          "note": "Gewicht geschätzt."
         },
         {
           "name": "Erste-Hilfe-Set klein",
           "qty": 1,
           "grams": 180,
+          "note": "Inhalt: Ibuprofen/Paracetamol, Antihistaminika, Rehydrationssachets (4–6), Blasenpflaster (Compeed), Wunddressings, antiseptische Tücher, antiseptische Creme, Leukotape, elastische Bandage, Pinzette, Sicherheitsnadeln, Rettungsdecke.",
           "takeAgain": true
         },
         {
@@ -432,10 +582,51 @@
           "grams": 20
         },
         {
-          "name": "Ohrstöpsel",
+          "name": "Ohrstöpsel (Wachs)",
           "qty": 1,
           "grams": 5,
           "note": "Auf Campingplätzen unbezahlbar.",
+          "takeAgain": true
+        },
+        {
+          "name": "Klopapier",
+          "qty": 1,
+          "grams": 60,
+          "note": "Gewicht geschätzt. Beim letzten Mal vergessen — diesmal fest einplanen.",
+          "takeAgain": true
+        },
+        {
+          "name": "Waschbecken-Stöpsel",
+          "qty": 1,
+          "grams": 10,
+          "note": "Gewicht geschätzt. Beim letzten Mal vergessen — für Handwäsche im Waschbecken.",
+          "takeAgain": true
+        },
+        {
+          "name": "Zipperbeutel, verschiedene Größen",
+          "qty": 1,
+          "grams": 20,
+          "note": "Gewicht geschätzt. Beim letzten Mal zu wenige dabei, u. a. für den nassen Sitzpolster in der Schmutzwäsche-Tasche.",
+          "takeAgain": true
+        },
+        {
+          "name": "Haushaltsgummis",
+          "qty": 1,
+          "grams": 10,
+          "note": "Gewicht geschätzt. Beim letzten Mal zu wenige dabei.",
+          "takeAgain": true
+        },
+        {
+          "name": "Wäscheklammern",
+          "qty": 4,
+          "grams": 5,
+          "note": "Gewicht geschätzt."
+        },
+        {
+          "name": "Wäscheleine (Bungee mit Haken)",
+          "qty": 1,
+          "grams": 25,
+          "note": "Gewicht geschätzt. Nasse Wäsche trocknet während der Fahrt am Gepäckträger-Packsack.",
           "takeAgain": true
         }
       ]
@@ -446,7 +637,8 @@
         {
           "name": "Ausweis",
           "qty": 1,
-          "grams": 10
+          "grams": 10,
+          "note": "Reisepass oder Personalausweis."
         },
         {
           "name": "Krankenversicherungskarte (EHIC)",
@@ -456,13 +648,14 @@
         {
           "name": "Bankkarte & Kreditkarte",
           "qty": 2,
-          "grams": 5
+          "grams": 5,
+          "note": "Zwei unterschiedliche Netzwerke."
         },
         {
           "name": "Bargeld",
           "qty": 1,
           "grams": 30,
-          "note": "Kleine Campings in den Alpen nehmen oft nur Bares."
+          "note": "€150–200, kleine Alpendörfer nehmen oft nur Bares — Tagesbudget wandert in die Lenkertasche."
         }
       ]
     }
