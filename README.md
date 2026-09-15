@@ -35,13 +35,13 @@ python3 -m http.server 8000
 ```sh
 python3 tools/build.py                     # write all 32 output files
 python3 tools/build.py --check             # only report what is out of date
-python3 tools/build.py --today 2026-09-05  # pin the ridden/today/planned date
+python3 tools/build.py --today 2026-09-05  # pin the ridden/planned date
 python3 tools/build.py --smoothing 0       # no elevation smoothing
 ```
 
-The ridden · today · planned state, the progress bar and the "Etappe von
-heute" button are worked out **at build time** from the current date. So
-rebuild before uploading.
+The ridden · planned state and the progress bar are worked out **at build
+time** from the current date (a stage counts as ridden once its date has
+passed). So rebuild before uploading.
 
 ## Where the content comes from
 

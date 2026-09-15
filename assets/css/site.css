@@ -79,7 +79,6 @@ table.stage-table{ width:100%; border-collapse:collapse; font-size:13.5px; min-w
 .stage-table .index{ font-family:var(--mono); color:var(--ink-faint); }
 .stage-table a{ font-weight:600; text-decoration:none; }
 .stage-table a:hover{ text-decoration:underline; }
-.stage-table tr.is-today td{ background:var(--red-pale); }
 .stage-table .passes-cell{ color:var(--ink-soft); font-size:12.5px; }
 .stage-table tfoot td{
   padding:11px 14px; font-family:var(--mono); font-weight:600;
@@ -95,7 +94,6 @@ table.stage-table{ width:100%; border-collapse:collapse; font-size:13.5px; min-w
   transition:border-color .15s ease, transform .15s ease, box-shadow .15s ease;
 }
 .stage-card:hover{ transform:translateY(-2px); box-shadow:var(--shadow); border-color:var(--blue); }
-.stage-card.is-today{ border-left-color:var(--red); }
 .stage-card.is-planned{ border-left-color:var(--line-strong); }
 .stage-card-head{ display:flex; align-items:center; justify-content:space-between; gap:10px; }
 .stage-index{ font-size:10.5px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:var(--ink-faint); }
@@ -111,8 +109,6 @@ table.stage-table{ width:100%; border-collapse:collapse; font-size:13.5px; min-w
 .sparkline path.area{ fill:var(--blue-pale); stroke:none; }
 .is-planned .sparkline path.line{ stroke:var(--ink-faint); stroke-dasharray:3 2; }
 .is-planned .sparkline path.area{ fill:var(--paper-deep); }
-.is-today .sparkline path.line{ stroke:var(--red-deep); }
-.is-today .sparkline path.area{ fill:var(--red-pale); }
 
 /* --- pass panel ---------------------------------------------------------- */
 .pass-panel{ background:var(--paper); border:1px solid var(--line); border-radius:var(--radius); padding:20px; }

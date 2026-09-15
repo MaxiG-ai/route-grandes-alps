@@ -154,7 +154,14 @@ Left to JavaScript: the Leaflet map, the elevation profile (which fetches
 The generator is idempotent and writes only what changed. `--check`
 compares without writing and fails if a committed file is out of date
 (`tools/upload.sh` calls it before uploading). `--today YYYY-MM-DD` pins
-the ridden/today/planned date, `--smoothing N` tunes the elevation filter.
+the ridden/planned date, `--smoothing N` tunes the elevation filter.
+
+There is no separate "today" state: a stage is either ridden (its date has
+passed) or planned. The trip is a fixed itinerary, not a live tracker, so
+there is nothing meaningfully different about the one day a stage happens
+to match `--today` — and a three-way split invited a stage to be counted
+as both "ridden so far" and "still to come" at once, which is exactly what
+happened before this was simplified.
 
 One consequence of pre-computing: the trip state freezes at build time.
 Rebuild before uploading — noted in the README.
@@ -205,7 +212,7 @@ checkboxes kept in `localStorage`.
   rather than a locale, so the output does not depend on the machine.
 - Numbers: `1.512 m`, `63,2 km` — dot for thousands, comma for decimals.
 - Wording: Etappen, Tag 7 von 14, Packliste, Übernachtung, Zusammenfassung,
-  Fotos, Pässe, Distanz, Aufstieg, Abstieg, Höhe, Gelände/Straßen, heute,
+  Fotos, Pässe, Distanz, Aufstieg, Abstieg, Höhe, Gelände/Straßen,
   noch nicht gefahren, Lücke im Track.
 
 ## 6. Colours (tricolore on white)

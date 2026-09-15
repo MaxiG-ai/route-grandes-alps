@@ -117,14 +117,13 @@ button{ font-family:inherit; color:inherit; }
 .value-up{ color:var(--blue-deep); }
 .value-down{ color:var(--red-deep); }
 
-/* --- status: ridden / today / planned ------------------------------------ */
+/* --- status: ridden / planned --------------------------------------------- */
 .status{
   display:inline-flex; align-items:center; gap:5px; font-size:11px; font-weight:700;
   letter-spacing:.05em; text-transform:uppercase; padding:2px 8px; border-radius:999px;
 }
 .status::before{ content:""; width:6px; height:6px; border-radius:50%; background:currentColor; }
 .status-ridden{ background:var(--blue-pale); color:var(--blue-deep); }
-.status-today{ background:var(--red-pale); color:var(--red-deep); }
 .status-planned{ background:var(--paper-deep); color:var(--ink-soft); }
 
 /* --- progress ------------------------------------------------------------ */

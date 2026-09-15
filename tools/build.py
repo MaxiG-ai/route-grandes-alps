@@ -3,7 +3,7 @@
 
     python3 tools/build.py                    write everything
     python3 tools/build.py --check            only report what is out of date
-    python3 tools/build.py --today 2026-09-05 pin the ridden/today/planned date
+    python3 tools/build.py --today 2026-09-05 pin the ridden/planned date
     python3 tools/build.py --smoothing 0      no elevation smoothing
 
 Inputs
@@ -20,8 +20,8 @@ Text, figures, pass chips, lodging, summaries and photo grids end up in the
 HTML, so JavaScript only drives the map, the profile, the lightbox and the
 packing-list checkboxes.
 
-The ridden/today/planned state is worked out at build time, so rebuild
-before uploading.
+The ridden/planned state is worked out at build time, so rebuild before
+uploading.
 """
 import argparse
 import html
@@ -48,7 +48,7 @@ MONTH_SHORT = ["Jan.", "Feb.", "März", "Apr.", "Mai", "Juni", "Juli",
 GROUP_COLOURS = ["#003d78", "#0055a4", "#3d7dc0", "#7aa6d6", "#a8b6c8",
                  "#c8102e", "#ef4135", "#f2887f", "#5c6a80"]
 
-STATUS_LABEL = {"ridden": "gefahren", "today": "heute", "planned": "geplant"}
+STATUS_LABEL = {"ridden": "gefahren", "planned": "geplant"}
 
 
 # --- German formats --------------------------------------------------------
@@ -98,10 +98,15 @@ def e(text):
 
 
 def status_of(iso, today):
-    d = date.fromisoformat(iso)
-    if d < today:
-        return "ridden"
-    return "today" if d == today else "planned"
+    """'ridden' once a stage's date has passed, 'planned' otherwise.
+
+    No separate 'today' status: the trip is a fixed, dated itinerary, not a
+    live tracker, so there is nothing meaningfully different about the one
+    day a stage happens to match --today. Keeping just two states also
+    means a stage can never count toward both "ridden so far" and "still to
+    come" at once.
+    """
+    return "ridden" if date.fromisoformat(iso) <= today else "planned"
 
 
 def status_badge(status):
@@ -253,7 +258,7 @@ def render_home(trip, stages):
     total_km = sum(s["distanceKm"] for s in stages)
     total_up = sum(s["ascentM"] for s in stages)
     pass_count = sum(len(s["passes"]) for s in stages)
-    ridden = [s for s in stages if s["status"] != "planned"]
+    ridden = [s for s in stages if s["status"] == "ridden"]
     ridden_km = sum(s["distanceKm"] for s in ridden)
     left = len(stages) - len(ridden)
     start_place, end_place = stages[0]["from"], stages[-1]["to"]
@@ -268,14 +273,11 @@ def render_home(trip, stages):
                  'data/trip.json → "coverPhoto"</span></p>'
                  '<div class="tricolore" aria-hidden="true"></div></div>')
 
-    today_stage = next((s for s in stages if s["status"] == "today"), None)
-    target = today_stage or (ridden[-1] if ridden else stages[0])
-    if today_stage:
-        cta_text = card_title = "Etappe von heute"
-        card_title = "Heute"
-    elif ridden:
+    if ridden:
+        target = ridden[-1]
         cta_text = card_title = "Zuletzt gefahren"
     else:
+        target = stages[0]
         cta_text, card_title = "Erste Etappe", "Der Anfang"
     card_text = (f'Tag {target["no"]}: {stage_name(target)} — {km(target["distanceKm"])}, '
                  f'{metres(target["ascentM"], "+")}.')
@@ -292,7 +294,7 @@ def render_home(trip, stages):
         passes = ", ".join(p["name"] for p in s["passes"]) or (
             ", ".join(s["plannedPasses"]) + " (geplant)" if s["plannedPasses"] else "—")
         rows.append(
-            f'<tr class="{"is-today" if s["status"] == "today" else ""}">'
+            '<tr>'
             f'<td class="index">{s["no"]}</td>'
             f'<td class="mono" style="white-space:nowrap">{e(short_date(s["date"]))}</td>'
             f'<td><a href="{s["id"]}.html">{e(stage_name(s))}</a> '
@@ -677,7 +679,7 @@ def main():
     parser.add_argument("--check", action="store_true",
                         help="write nothing, just report which files are out of date")
     parser.add_argument("--today", metavar="YYYY-MM-DD",
-                        help="date used for ridden/today/planned (default: today)")
+                        help="date used for ridden/planned (default: today)")
     parser.add_argument("--smoothing", type=int, default=gpx.SMOOTHING_WINDOW_M, metavar="METRES",
                         help=f"average elevation over a window of METRES (default {gpx.SMOOTHING_WINDOW_M}, 0 = off)")
     args = parser.parse_args()

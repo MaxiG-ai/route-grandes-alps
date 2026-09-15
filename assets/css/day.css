@@ -159,7 +159,6 @@
   border-radius:0 0 var(--radius-sm) var(--radius-sm); padding:9px 11px;
 }
 .stage-strip a:hover{ border-color:var(--blue); }
-.stage-strip a.is-today{ border-top-color:var(--red); }
 .stage-strip a.is-planned{ border-top-color:var(--line-strong); }
 .stage-strip a[aria-current="page"]{ background:var(--blue-pale); border-color:var(--blue); }
 .stage-strip .index{ font-size:10px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-faint); }
