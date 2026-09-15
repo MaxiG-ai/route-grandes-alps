@@ -137,31 +137,100 @@ Names without an entry show unchanged, so proper nouns like `Col de Vars`
 need none. The table survives every rebuild and is read at runtime, so no
 rebuild is required after editing it.
 
-## Uploading (Hetzner web hosting)
+$ cat <<'EOF'
 
-Every path is relative, so the site also runs from a subdirectory. Upload
-only:
+---
+## Uploading (Hetzner Webhosting S — FTP/SFTP, no SSH)
 
-```
-index.html  stages.html  packing-list.html  day-*.html
-assets/  data/  photos/  .htaccess
-```
+Webhosting S doesn't include shell/SSH access, so `tools/upload.sh` (which
+needs `ssh`/`rsync`) won't work here. Upload with any FTP/SFTP client
+instead (FileZilla, Cyberduck, WinSCP, ...), using the credentials from
+your Hetzner KonsoleH account (Konsole H → your hosting package → FTP
+accounts / SFTP).
 
-`tools/`, `templates/`, `docs/`, `gpx/` and `reference/` stay local.
-
+**Before uploading**, rebuild locally so nothing stale goes up:
 ```sh
-export RGA_HOST=…  RGA_USER=…  RGA_PATH=/public_html
-./tools/upload.sh --dry-run   # look first
-./tools/upload.sh
+python3 tools/build.py --check
+```
+If that reports anything out of date, run `python3 tools/build.py` first.
+
+**Upload these, into the web root of your domain** (usually shown in
+KonsoleH as the document root for the domain — often the top level of the
+FTP account, sometimes a subfolder; check there if unsure):
+
+```
+index.html
+stages.html
+packing-list.html
+day-01.html … day-14.html
+assets/            (whole folder, incl. css/, js/, vendor/)
+data/              (whole folder, incl. tracks/)
+photos/            (whole folder — skip photos/README.md, it's a local note)
+.htaccess          (hidden file — enable "show hidden files" in your client)
 ```
 
-The script runs `--check` first so a stale page cannot go up. Uploading
-with an SFTP client works just as well: same file list, target is the
-document root. `.htaccess` is optional and only sets cache times and
-compression.
+**Do NOT upload**: `gpx/`, `tools/`, `templates/`, `docs/`, `reference/`,
+`README.md`, `LICENSE`, `.git/`. These are build-time/local-only and
+never read by a visitor's browser.
 
-After uploading, open a stage page directly (`…/day-07.html`) — that shows
-straight away whether `assets/` and `data/tracks/` made it.
+`.htaccess` is optional (only sets cache headers and compression for
+Apache) — the site works without it, just slightly less optimized.
+
+After uploading, open a stage page directly (e.g. `.../day-07.html`) to
+confirm `assets/` and `data/tracks/` made it across — if the map or
+elevation profile don't load, one of those two folders is likely missing
+or in the wrong place.
+
+Whenever you edit `data/` or `gpx/`, rebuild and re-upload the same file
+list — the whole site is static output, there's nothing to "deploy" on
+the server side beyond copying files.
+EOF
+
+---
+## Uploading (Hetzner Webhosting S — FTP/SFTP, no SSH)
+
+Webhosting S doesn't include shell/SSH access, so `tools/upload.sh` (which
+needs `ssh`/`rsync`) won't work here. Upload with any FTP/SFTP client
+instead (FileZilla, Cyberduck, WinSCP, ...), using the credentials from
+your Hetzner KonsoleH account (Konsole H → your hosting package → FTP
+accounts / SFTP).
+
+**Before uploading**, rebuild locally so nothing stale goes up:
+```sh
+python3 tools/build.py --check
+```
+If that reports anything out of date, run `python3 tools/build.py` first.
+
+**Upload these, into the web root of your domain** (usually shown in
+KonsoleH as the document root for the domain — often the top level of the
+FTP account, sometimes a subfolder; check there if unsure):
+
+```
+index.html
+stages.html
+packing-list.html
+day-01.html … day-14.html
+assets/            (whole folder, incl. css/, js/, vendor/)
+data/              (whole folder, incl. tracks/)
+photos/            (whole folder — skip photos/README.md, it's a local note)
+.htaccess          (hidden file — enable "show hidden files" in your client)
+```
+
+**Do NOT upload**: `gpx/`, `tools/`, `templates/`, `docs/`, `reference/`,
+`README.md`, `LICENSE`, `.git/`. These are build-time/local-only and
+never read by a visitor's browser.
+
+`.htaccess` is optional (only sets cache headers and compression for
+Apache) — the site works without it, just slightly less optimized.
+
+After uploading, open a stage page directly (e.g. `.../day-07.html`) to
+confirm `assets/` and `data/tracks/` made it across — if the map or
+elevation profile don't load, one of those two folders is likely missing
+or in the wrong place.
+
+Whenever you edit `data/` or `gpx/`, rebuild and re-upload the same file
+list — the whole site is static output, there's nothing to "deploy" on
+the server side beyond copying files.
 
 ## Layout
 
