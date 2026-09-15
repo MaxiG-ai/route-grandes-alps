@@ -4,7 +4,7 @@
   "baseWeights": [
     {
       "name": "Rad, fahrfertig ohne Gepäck",
-      "grams": 11800
+      "grams": 12900
     },
     {
       "name": "Wasser (2 Flaschen voll)",
@@ -17,44 +17,39 @@
       "note": "Rahmentasche für Werkzeug, Arschrakete für Kleidung, Lenkerrolle für den Schlafkram.",
       "items": [
         {
-          "name": "Satteltasche 14 l",
-          "qty": 1,
-          "grams": 480,
+          "name": "Gepäckträgertasche 24 l",
+          "qty": 2,
+          "grams": 990,
+          "note":"Könnte sein, dass die nicht wirklich gleich schwer sind.",
           "takeAgain": true
         },
         {
-          "name": "Lenkerrolle 9 l",
+          "name": "Tailfin Half Frame Bag 3 l with Straps",
           "qty": 1,
-          "grams": 340,
+          "grams": 290,
           "takeAgain": true
         },
         {
-          "name": "Rahmentasche 3 l",
+          "name": "Tailfin Top Tube Bag 1.1l strap-mount",
           "qty": 1,
-          "grams": 210,
-          "takeAgain": true
-        },
-        {
-          "name": "Oberrohrtasche",
-          "qty": 1,
-          "grams": 95,
+          "grams": 150,
           "note": "Riegel und Powerbank in Reichweite.",
           "takeAgain": true
         },
         {
-          "name": "Gabeltasche",
+          "name": "Gabeltasche ADVT 900",
           "qty": 2,
           "grams": 240,
-          "note": "Eine hätte gereicht.",
-          "takeAgain": false
+          "note":"Gewicht geschätzt",
+          "takeAgain": true
         },
         {
-          "name": "Packsäcke wasserdicht",
-          "qty": 3,
-          "grams": 45
+          "name": "Cube ACID Fork Racks",
+          "qty": 2,
+          "grams": 89
         },
         {
-          "name": "Spanngurte",
+          "name": "Voilé Spanngurte",
           "qty": 2,
           "grams": 30
         }
@@ -332,12 +327,6 @@
           "name": "Notverpflegung (Riegel)",
           "qty": 4,
           "grams": 60
-        },
-        {
-          "name": "Elektrolyt-Tabs",
-          "qty": 1,
-          "grams": 40,
-          "takeAgain": true
         }
       ]
     },
@@ -357,9 +346,9 @@
           "grams": 200
         },
         {
-          "name": "Powerbank 10.000 mAh",
+          "name": "Anker Powerbank 20000 mAh",
           "qty": 1,
-          "grams": 210,
+          "grams": 400,
           "takeAgain": true
         },
         {
@@ -474,12 +463,6 @@
           "qty": 1,
           "grams": 30,
           "note": "Kleine Campings in den Alpen nehmen oft nur Bares."
-        },
-        {
-          "name": "Fahrradschloss leicht",
-          "qty": 1,
-          "grams": 320,
-          "takeAgain": null
         }
       ]
     }
