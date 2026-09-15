@@ -3,7 +3,6 @@
 (function(){
   const element = document.getElementById('overviewMap');
   if(!element || typeof L === 'undefined') return;
-  const status = window.RGA_STATUS || {};   /* {"day-01": "ridden", ...} */
   const names = window.RGA_NAMES || {};
 
   const { map } = RGA.map.create(element, { scrollWheelZoom: false });
@@ -17,7 +16,7 @@
     .then(stages => {
       const everything = [];
       for(const stage of stages){
-        const line = RGA.map.line(group, stage.points, status[stage.id] || 'planned', { weight:3.5 });
+        const line = RGA.map.line(group, stage.points, { weight:3.5 });
         line.bindTooltip('Tag ' + stage.no + ' · ' + (names[stage.id] || ''), { sticky:true });
         line.on('click', () => { window.location.href = stage.id + '.html'; });
         line.on('mouseover', () => line.setStyle({ weight:5.5 }));

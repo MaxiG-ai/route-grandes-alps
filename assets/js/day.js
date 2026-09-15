@@ -34,7 +34,7 @@
   ])
     .then(([track, names]) => {
       const latlngs = track.points.map(p => [p.lat, p.lon]);
-      RGA.map.line(group, latlngs, stage.status);
+      RGA.map.line(group, latlngs);
       RGA.map.startMarker(group, latlngs[0], stage.from);
       RGA.map.finishMarker(group, latlngs[latlngs.length - 1], stage.to);
       for(const w of track.waypoints){

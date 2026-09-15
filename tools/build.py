@@ -3,7 +3,6 @@
 
     python3 tools/build.py                    write everything
     python3 tools/build.py --check            only report what is out of date
-    python3 tools/build.py --today 2026-09-05 pin the ridden/planned date
     python3 tools/build.py --smoothing 0      no elevation smoothing
 
 Inputs
@@ -20,8 +19,8 @@ Text, figures, pass chips, lodging, summaries and photo grids end up in the
 HTML, so JavaScript only drives the map, the profile, the lightbox and the
 packing-list checkboxes.
 
-The ridden/planned state is worked out at build time, so rebuild before
-uploading.
+The trip is finished and its dates are fixed, so there is no ridden/planned
+distinction to work out -- every stage is simply done.
 """
 import argparse
 import html
@@ -47,9 +46,6 @@ MONTH_SHORT = ["Jan.", "Feb.", "März", "Apr.", "Mai", "Juni", "Juli",
 # Packing-list group colours: from blue through neutral tones to red.
 GROUP_COLOURS = ["#003d78", "#0055a4", "#3d7dc0", "#7aa6d6", "#a8b6c8",
                  "#c8102e", "#ef4135", "#f2887f", "#5c6a80"]
-
-STATUS_LABEL = {"ridden": "gefahren", "planned": "geplant"}
-
 
 # --- German formats --------------------------------------------------------
 
@@ -97,22 +93,6 @@ def e(text):
     return html.escape(str(text), quote=True) if text is not None else ""
 
 
-def status_of(iso, today):
-    """'ridden' once a stage's date has passed, 'planned' otherwise.
-
-    No separate 'today' status: the trip is a fixed, dated itinerary, not a
-    live tracker, so there is nothing meaningfully different about the one
-    day a stage happens to match --today. Keeping just two states also
-    means a stage can never count toward both "ridden so far" and "still to
-    come" at once.
-    """
-    return "ridden" if date.fromisoformat(iso) <= today else "planned"
-
-
-def status_badge(status):
-    return f'<span class="status status-{status}">{STATUS_LABEL[status]}</span>'
-
-
 # --- small HTML pieces -----------------------------------------------------
 
 def stat(label, value, css_class=""):
@@ -143,8 +123,7 @@ def strava_chips(stage):
             f' target="_blank" rel="noopener">{e(a["name"])}</a>'
             for a in stage["strava"]
         )
-    text = "Noch nicht gefahren" if stage["status"] == "planned" else "Keine Aufzeichnung"
-    return f'<span class="strava muted">{text}</span>'
+    return '<span class="strava muted">Keine Aufzeichnung</span>'
 
 
 def sparkline(profile, width=260, height=34, pad=3):
@@ -203,7 +182,7 @@ def page(trip, body, *, title, description, extra_css, scripts, active, og_title
 
 # --- loading ---------------------------------------------------------------
 
-def load_stages(today, smoothing):
+def load_stages(smoothing):
     """Merge every gpx/*.gpx with its entry in data/trip.json."""
     trip = json.loads((DATA / "trip.json").read_text(encoding="utf-8"))
     content = {s["id"]: s for s in trip["stages"]}
@@ -228,7 +207,6 @@ def load_stages(today, smoothing):
             if not stage.get(field):
                 sys.exit(f'data/trip.json, {sid}: "{field}" is missing')
         stage.update(measured)
-        stage["status"] = status_of(stage["date"], today)
         stage.setdefault("passes", [])
         stage.setdefault("plannedPasses", [])
         stage.setdefault("strava", [])
@@ -258,9 +236,6 @@ def render_home(trip, stages):
     total_km = sum(s["distanceKm"] for s in stages)
     total_up = sum(s["ascentM"] for s in stages)
     pass_count = sum(len(s["passes"]) for s in stages)
-    ridden = [s for s in stages if s["status"] == "ridden"]
-    ridden_km = sum(s["distanceKm"] for s in ridden)
-    left = len(stages) - len(ridden)
     start_place, end_place = stages[0]["from"], stages[-1]["to"]
 
     if trip.get("coverPhoto"):
@@ -273,21 +248,10 @@ def render_home(trip, stages):
                  'data/trip.json → "coverPhoto"</span></p>'
                  '<div class="tricolore" aria-hidden="true"></div></div>')
 
-    if ridden:
-        target = ridden[-1]
-        cta_text = card_title = "Zuletzt gefahren"
-    else:
-        target = stages[0]
-        cta_text, card_title = "Erste Etappe", "Der Anfang"
+    target = stages[-1]
+    cta_text = card_title = "Ankunft"
     card_text = (f'Tag {target["no"]}: {stage_name(target)} — {km(target["distanceKm"])}, '
                  f'{metres(target["ascentM"], "+")}.')
-
-    if left == 0:
-        progress_note = f'{end_place} erreicht · alle {len(stages)} Etappen gefahren'
-    else:
-        progress_note = (f'{len(ridden)} von {len(stages)} Etappen gefahren · '
-                         f'{km(ridden_km)} von {km(total_km)} · noch {left} '
-                         f'{"Etappe" if left == 1 else "Etappen"}')
 
     rows = []
     for s in stages:
@@ -297,8 +261,7 @@ def render_home(trip, stages):
             '<tr>'
             f'<td class="index">{s["no"]}</td>'
             f'<td class="mono" style="white-space:nowrap">{e(short_date(s["date"]))}</td>'
-            f'<td><a href="{s["id"]}.html">{e(stage_name(s))}</a> '
-            f'{status_badge(s["status"]) if s["status"] != "ridden" else ""}</td>'
+            f'<td><a href="{s["id"]}.html">{e(stage_name(s))}</a></td>'
             f'<td class="num">{km(s["distanceKm"])}</td>'
             f'<td class="num value-up">{metres(s["ascentM"], "+")}</td>'
             f'<td class="passes-cell">{e(passes)}</td></tr>')
@@ -314,8 +277,6 @@ def render_home(trip, stages):
             stat("Pässe", number(pass_count) if pass_count else "—"),
             stat("Etappen", str(len(stages))),
         ]),
-        "progress": f"{ridden_km / total_km * 100:.1f}",
-        "progress_note": e(progress_note),
         "cta_href": f'{target["id"]}.html',
         "cta_text": e(cta_text),
         "cover": cover,
@@ -336,8 +297,7 @@ def render_home(trip, stages):
         '<script src="assets/vendor/leaflet/leaflet.js"></script>\n'
         '<script src="assets/js/format.js"></script>\n'
         '<script src="assets/js/map.js"></script>\n'
-        f'<script>window.RGA_STATUS={json.dumps({s["id"]: s["status"] for s in stages})};'
-        f'window.RGA_NAMES={json.dumps({s["id"]: stage_name(s) for s in stages}, ensure_ascii=False)};</script>\n'
+        f'<script>window.RGA_NAMES={json.dumps({s["id"]: stage_name(s) for s in stages}, ensure_ascii=False)};</script>\n'
         '<script src="assets/js/home.js"></script>'
     )
     return page(
@@ -364,7 +324,7 @@ def render_stages(trip, stages):
     for s in stages:
         passes = " · ".join(p["name"] for p in s["passes"]) or " · ".join(s["plannedPasses"])
         cards.append(
-            f'<a class="stage-card is-{s["status"]}" href="{s["id"]}.html">'
+            f'<a class="stage-card" href="{s["id"]}.html">'
             f'<span class="stage-card-head"><span class="stage-index">Tag {s["no"]}</span>'
             f'<span class="stage-date">{e(short_date(s["date"]))}</span></span>'
             f'<span class="stage-name">{e(stage_name(s))}</span>'
@@ -374,7 +334,6 @@ def render_stages(trip, stages):
             + f'<span class="stage-figures"><span><b>{km(s["distanceKm"])}</b></span>'
               f'<span><b>{metres(s["ascentM"], "+")}</b></span>'
               f'<span><b>{metres(s["descentM"], "-")}</b></span></span>'
-            + (f"<span>{status_badge(s['status'])}</span>" if s["status"] != "ridden" else "")
             + '</a>')
 
     with_passes = [s for s in stages if s["passes"]]
@@ -506,7 +465,7 @@ def render_day(trip, stage, stages):
                           f'<span class="target">{e(stage_name(following))}</span></a>')
 
     strip = "".join(
-        f'<a class="is-{s["status"]}" href="{s["id"]}.html"'
+        f'<a href="{s["id"]}.html"'
         + (' aria-current="page"' if s["id"] == stage["id"] else "")
         + f'><span class="index">Tag {s["no"]}</span>'
           f'<span class="place">{e(s["to"])}</span>'
@@ -522,7 +481,6 @@ def render_day(trip, stage, stages):
         "no": str(no),
         "count": str(len(stages)),
         "date": e(long_date(stage["date"])),
-        "status_badge": status_badge(stage["status"]),
         "from": e(stage["from"]),
         "to": e(stage["to"]),
         "gap": (f'<p class="day-gap"><b>Lücke im Track:</b> {e(stage["gap"])}</p>'
@@ -556,8 +514,7 @@ def render_day(trip, stage, stages):
             "html": f'<b>{lodging["name"]}</b>'
                     + (f'{lodging.get("type", "")} · Übernachtung Tag {no}').strip(" ·"),
         }
-    meta = {"id": stage["id"], "status": stage["status"],
-            "from": stage["from"], "to": stage["to"], "lodging": marker}
+    meta = {"id": stage["id"], "from": stage["from"], "to": stage["to"], "lodging": marker}
     scripts = (
         '<script src="assets/vendor/leaflet/leaflet.js"></script>\n'
         '<script src="assets/js/format.js"></script>\n'
@@ -678,14 +635,11 @@ def main():
     parser = argparse.ArgumentParser(description="Build the site from gpx/ and data/.")
     parser.add_argument("--check", action="store_true",
                         help="write nothing, just report which files are out of date")
-    parser.add_argument("--today", metavar="YYYY-MM-DD",
-                        help="date used for ridden/planned (default: today)")
     parser.add_argument("--smoothing", type=int, default=gpx.SMOOTHING_WINDOW_M, metavar="METRES",
                         help=f"average elevation over a window of METRES (default {gpx.SMOOTHING_WINDOW_M}, 0 = off)")
     args = parser.parse_args()
-    today = date.fromisoformat(args.today) if args.today else date.today()
 
-    trip, stages, tracks = load_stages(today, args.smoothing)
+    trip, stages, tracks = load_stages(args.smoothing)
     packing = json.loads((DATA / "packing-list.json").read_text(encoding="utf-8"))
 
     files = {
@@ -721,13 +675,13 @@ def main():
         if stale:
             print("Out of date: " + ", ".join(stale))
             sys.exit(1)
-        print(f"All {len(files)} files are up to date (as of {today.isoformat()}).")
+        print(f"All {len(files)} files are up to date.")
         return
 
     total_km = sum(s["distanceKm"] for s in stages)
     print(f'{len(stages)} stages, {total_km:.0f} km, '
           f'{sum(s["rawPoints"] for s in stages)} GPX points read')
-    print(f"{len(files)} files checked, {len(stale)} written (as of {today.isoformat()})")
+    print(f"{len(files)} files checked, {len(stale)} written")
     for name in stale:
         print(f"  {name}  {(ROOT / name).stat().st_size / 1024:.0f} KB")
 

@@ -3,11 +3,10 @@ window.RGA = window.RGA || {};
 
 RGA.map = (function(){
   const COLOUR = {
-    ridden:  '#ef4135',   /* red: already ridden */
-    planned: '#0055a4',   /* blue, dashed: still ahead */
-    start:   '#0055a4',
-    finish:  '#c8102e',
-    point:   '#111827',
+    route:  '#ef4135',
+    start:  '#0055a4',
+    finish: '#c8102e',
+    point:  '#111827',
   };
 
   /* Creates the map. opts.toggle is the terrain/streets switch, if present. */
@@ -43,17 +42,15 @@ RGA.map = (function(){
   }
 
   /* White casing under a coloured line, so the route reads on any tile. */
-  function line(group, latlngs, status, opts){
+  function line(group, latlngs, opts){
     opts = opts || {};
-    const planned = status === 'planned';
     L.polyline(latlngs, {
       color:'#ffffff', weight: (opts.weight || 4.5) + 3.5, opacity:.85,
       lineCap:'round', lineJoin:'round', interactive:false,
     }).addTo(group);
     return L.polyline(latlngs, {
-      color: planned ? COLOUR.planned : COLOUR.ridden,
-      weight: opts.weight || 4.5, opacity:1, lineCap:'round', lineJoin:'round',
-      dashArray: planned ? '9 7' : null,
+      color: COLOUR.route, weight: opts.weight || 4.5, opacity:1,
+      lineCap:'round', lineJoin:'round',
     }).addTo(group);
   }
 

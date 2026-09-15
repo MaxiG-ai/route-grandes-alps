@@ -1,5 +1,5 @@
 {
-  "title": "Rhein bis Riviera",
+  "title": "Von Karlsruhe nach Ligurien",
   "subtitle": "Bikepacking auf der Route des Grandes Alpes",
   "stravaProfile": "https://www.strava.com/athletes/11965636",
   "quaeldichProfile": "https://www.quaeldich.de/passjagd/mgRT/",
@@ -28,7 +28,7 @@
       "id": "day-02",
       "no": 2,
       "from": "Kehl",
-      "to": "Lörrach",
+      "to": "Kemps",
       "date": "2026-08-31",
       "gap": null,
       "plannedPasses": [],
@@ -46,7 +46,7 @@
     {
       "id": "day-03",
       "no": 3,
-      "from": "Lörrach",
+      "from": "Kemps",
       "to": "Jura",
       "date": "2026-09-01",
       "gap": "13 km Transfer sind nicht im Track",
