@@ -28,7 +28,7 @@
       "id": "day-02",
       "no": 2,
       "from": "Kehl",
-      "to": "Kemps",
+      "to": "Kembs",
       "date": "2026-08-31",
       "gap": null,
       "plannedPasses": [],
@@ -46,7 +46,7 @@
     {
       "id": "day-03",
       "no": 3,
-      "from": "Kemps",
+      "from": "Kembs",
       "to": "Jura",
       "date": "2026-09-01",
       "gap": "13 km Transfer sind nicht im Track",
