@@ -596,7 +596,7 @@ def render_packing_list(trip, stages, packing):
 
     worn = sum(w for group, _, w in totals if group.get("wornOnBody"))
     luggage_groups = len([g for g, _, _ in totals if not g.get("wornOnBody")])
-    note = [f"in {luggage_groups} Gruppen, ohne Rad"]
+    note = [f"in {luggage_groups} Gruppen, inkl. Rad"]
     if worn:
         note.append(f"am Körper zusätzlich {grams(worn)}")
     for base in packing.get("baseWeights") or []:
