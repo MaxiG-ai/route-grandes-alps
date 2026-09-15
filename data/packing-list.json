@@ -62,6 +62,19 @@
           "grams": 90,
           "note": "Gewicht geschätzt. Oben auf dem Gepäckträger verzurrt, für Zelt, Heringe und Zeltunterlage.",
           "takeAgain": true
+        },
+        {
+          "name": "Schmutzwäsche-Packsack, ~10 l, auffällige Farbe",
+          "qty": 1,
+          "grams": 90,
+          "note": "Gewicht geschätzt. Lebt in der linken Gepäckträgertasche, nur für getragene Kleidung — nie zusammen mit frischer Wäsche im gleichen Fach. Kleiner Zip-Beutel darin für einen nassen Sitzpolster.",
+          "takeAgain": true
+        },
+        {
+          "name": "Karabiner für Slip-Ons",
+          "qty": 1,
+          "grams": 10,
+          "note": "Gewicht geschätzt. Am Rackträger-Packsack, für Slip-Ons und trocknende Wäsche."
         }
       ]
     },
@@ -92,7 +105,7 @@
           "name": "Kopfkissen aufblasbar",
           "qty": 1,
           "grams": 75,
-          "note": "Für die nächste Tour ersetzt durch Packsack + Daunenjacke als Kissen — spart Gewicht.",
+          "note": "Auf der RGA-Tour nicht mitgenommen — Kissenersatz war der Packsack mit der Daunenjacke drin.",
           "takeAgain": false
         },
         {
@@ -234,7 +247,7 @@
           "name": "Kurze Hose (Abend)",
           "qty": 1,
           "grams": 170,
-          "note": "Schwimmtaugliches Modell wählen — deckt die Badehose-Funktion mit ab."
+          "note": "Schwimmtaugliches Modell — deckt die Badehose-Funktion mit ab."
         },
         {
           "name": "Lange Hose (Camp, schnelltrocknend)",
@@ -332,7 +345,7 @@
           "name": "Ersatzschaltauge",
           "qty": 1,
           "grams": 25,
-          "note": "Passend zum Rahmen, wiegt nichts. Cube-Nuroad-spezifisches Teil — vor Abfahrt besorgen.",
+          "note": "Passend zum Rahmen, wiegt nichts. Cube-Nuroad-spezifisches Teil.",
           "takeAgain": true
         },
         {
@@ -379,21 +392,21 @@
           "name": "Gaskocher",
           "qty": 1,
           "grams": 105,
-          "note": "Strategie für die nächste Tour: kein Kochen mehr, Dorf-Versorgung reicht (1–2 Einkaufsstopps pro Tag).",
+          "note": "Auf der RGA-Tour nicht mitgenommen — Strategie war kein Kochen, Dorf-Versorgung reicht (1–2 Einkaufsstopps pro Tag).",
           "takeAgain": false
         },
         {
           "name": "Gaskartusche 100 g",
           "qty": 1,
           "grams": 190,
-          "note": "Entfällt ohne Kocher.",
+          "note": "Auf der RGA-Tour nicht mitgenommen (kein Kocher).",
           "takeAgain": false
         },
         {
           "name": "Topf 700 ml",
           "qty": 1,
           "grams": 145,
-          "note": "Entfällt ohne Kocher.",
+          "note": "Auf der RGA-Tour nicht mitgenommen (kein Kocher).",
           "takeAgain": false
         },
         {
@@ -469,7 +482,7 @@
           "name": "Steckdosenadapter international",
           "qty": 1,
           "grams": 60,
-          "note": "Gewicht geschätzt. FR/DE passen mit EU-Stecker, CH braucht einen eigenen Adapter — für die Jura-Nächte einpacken."
+          "note": "Gewicht geschätzt. FR/DE passen mit EU-Stecker, CH braucht einen eigenen Adapter — für die Übernachtungen im Jura gebraucht."
         },
         {
           "name": "Frontlicht",
@@ -592,29 +605,29 @@
           "name": "Klopapier",
           "qty": 1,
           "grams": 60,
-          "note": "Gewicht geschätzt. Beim letzten Mal vergessen — diesmal fest einplanen.",
-          "takeAgain": true
+          "note": "Gewicht geschätzt. Auf der RGA-Tour gefehlt — unterwegs als Lücke aufgefallen, nicht dabei gehabt.",
+          "takeAgain": null
         },
         {
           "name": "Waschbecken-Stöpsel",
           "qty": 1,
           "grams": 10,
-          "note": "Gewicht geschätzt. Beim letzten Mal vergessen — für Handwäsche im Waschbecken.",
-          "takeAgain": true
+          "note": "Gewicht geschätzt. Auf der RGA-Tour gefehlt — für Handwäsche im Waschbecken hätte er gefehlt.",
+          "takeAgain": null
         },
         {
           "name": "Zipperbeutel, verschiedene Größen",
           "qty": 1,
           "grams": 20,
-          "note": "Gewicht geschätzt. Beim letzten Mal zu wenige dabei, u. a. für den nassen Sitzpolster in der Schmutzwäsche-Tasche.",
-          "takeAgain": true
+          "note": "Gewicht geschätzt. Auf der RGA-Tour zu wenige dabei gehabt, u. a. für den nassen Sitzpolster in der Schmutzwäsche-Tasche.",
+          "takeAgain": null
         },
         {
           "name": "Haushaltsgummis",
           "qty": 1,
           "grams": 10,
-          "note": "Gewicht geschätzt. Beim letzten Mal zu wenige dabei.",
-          "takeAgain": true
+          "note": "Gewicht geschätzt. Auf der RGA-Tour zu wenige dabei gehabt.",
+          "takeAgain": null
         },
         {
           "name": "Wäscheklammern",
