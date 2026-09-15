@@ -1,21 +1,16 @@
 {
   "_note": "Template for an alpine bikepacking trip with a tent. Weights are in grams per item and want checking on a scale. 'takeAgain': true | false | null (undecided) shows up as a verdict badge on the page.",
-  "intro": "Alles, was auf dem Rad von Karlsruhe nach Isolabona mitgefahren ist. Gewichte pro Stück, ohne Rad, ohne Wasser und ohne Verpflegung unterwegs.",
-  "baseWeights": [
-    {
-      "name": "Rad, fahrfertig ohne Gepäck",
-      "grams": 12900
-    },
-    {
-      "name": "Wasser (2 Flaschen voll)",
-      "grams": 1500
-    }
-  ],
+  "intro": "Noch in der Erstellung. Ziel ist alles zu erfassen, was auf dem Rad von Karlsruhe nach Isolabona mitgefahren ist. Körpergewicht zu Start: ca. 92kg",
   "groups": [
     {
-      "name": "Taschen & Gepäck",
+      "name": "Rad, Taschen & Gepäck",
       "note": "Rahmentasche für Werkzeug, Arschrakete für Kleidung, Lenkerrolle für den Schlafkram.",
       "items": [
+        {
+          "name": "Rad, fahrfertig ohne Gepäck",
+          "qty": 1,
+          "grams": 12900
+        },
         {
           "name": "Gepäckträgertasche 24 l",
           "qty": 2,
@@ -61,6 +56,13 @@
           "qty": 1,
           "grams": 150,
           "note": "Gewicht geschätzt. Oben auf dem Gepäckträger verzurrt, für Zelt, Heringe und Zeltunterlage.",
+          "takeAgain": true
+        },
+        {
+          "name": "Cube Acid Schloss",
+          "qty": 1,
+          "grams": 800,
+          "note": "Gut fürs Gewissen, auch wenn es ein leichteres auch tut.",
           "takeAgain": true
         }
       ]
@@ -237,6 +239,13 @@
           "note": "Schwimmtaugliches Modell — deckt die Badehose-Funktion mit ab."
         },
         {
+          "name": "Badehose",
+          "qty": 1,
+          "grams": 170,
+          "note": "Nie benutzt, bin immer mit Klamotten schwimmen gegangen.",
+          "takeAgain":false
+        },
+        {
           "name": "Lange Hose (Camp, schnelltrocknend)",
           "qty": 1,
           "grams": 210,
@@ -245,7 +254,8 @@
         {
           "name": "Unterwäsche",
           "qty": 3,
-          "grams": 45
+          "grams": 45,
+          "note":"Uniqlo AIRism Größe M -> beste Unterhose für Reise und Alltag"
         },
         {
           "name": "Badehose",
@@ -255,10 +265,10 @@
           "takeAgain": true
         },
         {
-          "name": "Sandalen / Camp-Schuhe",
+          "name": "VivoBarefoot",
           "qty": 1,
           "grams": 320,
-          "note": "VivoBarefoot Slip-On.",
+          "note": "VivoBarefoot Slip-On -> Leider auf Schlussetappe durch Schlaglöcher in Ventimiglia verloren.",
           "takeAgain": true
         },
         {
@@ -280,9 +290,9 @@
           "note": "Gewicht geschätzt. Dicker als die Radsocken, nur für abends."
         },
         {
-          "name": "Daunenjacke leicht",
+          "name": "Norway Puff warm",
           "qty": 1,
-          "grams": 290,
+          "grams": 350,
           "note": "Eigentlich synthetisches Puffy (Norway), keine Daune — die wärmere, statische Jacke.",
           "takeAgain": true
         },
@@ -336,15 +346,10 @@
           "takeAgain": true
         },
         {
-          "name": "Speichen (im Sattelrohr)",
-          "qty": 3,
-          "grams": 12
-        },
-        {
           "name": "Bremsbeläge (Satz)",
           "qty": 1,
           "grams": 40,
-          "note": "Nach Galibier und Izoard fast fällig.",
+          "note": "Waren letzlich nicht nötig, aber sehr gut für das Gefühl",
           "takeAgain": true
         },
         {
@@ -367,35 +372,15 @@
           "name": "Ersatzschrauben Gepäckträger/Käfig",
           "qty": 1,
           "grams": 15,
-          "note": "Gewicht geschätzt. Käfig- und Rack-Hardware löst sich unterwegs."
+          "note": "Gewicht geschätzt. Schrauben hielten alle perfekt."
         }
       ]
     },
     {
       "name": "Küche & Verpflegung",
-      "note": "Kocher nur für Kaffee und Nudeln — gegessen wurde meist unterwegs.",
+      "note": "Verzicht auf Kochmöglichkeit -> Das würde ich das nächste Mal ändern. Man findet schon immer etwas zu essen, aber warmer Kaffee/Tee und die Freiheit nicht immer etwas suchen zu müssen wären schon wertvoll.",
       "items": [
-        {
-          "name": "Gaskocher",
-          "qty": 1,
-          "grams": 105,
-          "note": "Auf der RGA-Tour nicht mitgenommen — Strategie war kein Kochen, Dorf-Versorgung reicht (1–2 Einkaufsstopps pro Tag).",
-          "takeAgain": false
-        },
-        {
-          "name": "Gaskartusche 100 g",
-          "qty": 1,
-          "grams": 190,
-          "note": "Auf der RGA-Tour nicht mitgenommen (kein Kocher).",
-          "takeAgain": false
-        },
-        {
-          "name": "Topf 700 ml",
-          "qty": 1,
-          "grams": 145,
-          "note": "Auf der RGA-Tour nicht mitgenommen (kein Kocher).",
-          "takeAgain": false
-        },
+        
         {
           "name": "Löffel",
           "qty": 1,
@@ -406,11 +391,6 @@
           "qty": 1,
           "grams": 40,
           "note": "Gewicht geschätzt. Leichter Camping-Teller für Dorf-Käse-und-Brot-Stops."
-        },
-        {
-          "name": "Taschenmesser",
-          "qty": 1,
-          "grams": 60
         },
         {
           "name": "Trinkflasche 750 ml",
@@ -426,10 +406,9 @@
           "takeAgain": null
         },
         {
-          "name": "Notverpflegung (Riegel)",
-          "qty": 4,
-          "grams": 60,
-          "note": "Zielwert insgesamt 2.000–2.500 kcal Reserve."
+          "name": "Brotdose",
+          "qty": 1,
+          "grams": 150
         }
       ]
     },
